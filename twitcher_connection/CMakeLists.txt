@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(twitcher_manager)
+project(twitcher_connection)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -9,6 +9,11 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
 )
+
+find_package(CURL REQUIRED)
+
+## System dependencies are found with CMake's conventions
+# find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -98,9 +103,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-#  LIBRARIES twitcher_manager
+#  LIBRARIES twitcher_connection
   CATKIN_DEPENDS roscpp rospy std_msgs
-  DEPENDS system_lib curl
+  DEPENDS system_lib curl curlpp
 )
 
 ###########
@@ -112,28 +117,31 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${CURL_INCLUDE_DIR}
 )
 
 ## Declare a C++ library
-# add_library(twitcher_manager
-#   src/${PROJECT_NAME}/twitcher_manager.cpp
+# add_library(twitcher_connection
+#   src/${PROJECT_NAME}/twitcher_connection.cpp
 # )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(twitcher_manager ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(twitcher_connection ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-add_executable(twitcher_manager_node src/twitcher_manager_node.cpp)
+add_executable(twitcher_connection_node src/twitcher_connection_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(twitcher_manager_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(twitcher_connection_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(twitcher_manager_node
+target_link_libraries(twitcher_connection_node
   ${catkin_LIBRARIES}
+  ${CURL_LIBRARIES}
+  curlpp
 )
 
 #############
@@ -151,7 +159,7 @@ target_link_libraries(twitcher_manager_node
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS twitcher_manager twitcher_manager_node
+# install(TARGETS twitcher_connection twitcher_connection_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -176,7 +184,7 @@ target_link_libraries(twitcher_manager_node
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_twitcher_manager.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_twitcher_connection.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
