@@ -31,15 +31,8 @@ public:
     
 private:
     std::string configFile;
-    
-    std::string oauthToken;
-    std::string oauthSignature;
-    std::string oauthConsumerKey;
+    std::string authorizationHeader;
     std::string apiUrl;
-    std::string oauthVersion;
-    std::string oauthSignatureMethod;
-    
-    static std::string generateOauthNonce();
     
     static TwitterRequestHandler _instance;
 };
