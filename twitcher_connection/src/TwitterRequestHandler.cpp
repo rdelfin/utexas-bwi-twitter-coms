@@ -24,6 +24,7 @@
 #include <sstream>
 #include <ctime>
 #include <iostream>
+#include <fstream>
 
 #include <ros/ros.h>
 

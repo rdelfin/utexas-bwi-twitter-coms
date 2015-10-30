@@ -4,7 +4,7 @@ project(twitcher_connection)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 include(LibFindMacros)
 
-message("Hello!: ${CMAKE_MODULE_PATH}")
+set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -15,8 +15,9 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
 )
 
-find_package(Jsoncpp)
+find_package(Jsoncpp REQUIRED)
 find_package(CURL REQUIRED)
+find_package(OpenSSL REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -126,6 +127,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${CURL_INCLUDE_DIR}
   ${Jsoncpp_INCLUDE_DIR}
+  ${OpenSSL_INCLUDE_DIR}
 )
 
 ## Declare a C++ library
@@ -139,7 +141,10 @@ include_directories(
 # add_dependencies(twitcher_connection ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-add_executable(twitcher_connection_node src/twitcher_connection_node.cpp src/TwitterRequestHandler.cpp)
+add_executable(twitcher_connection_node src/twitcher_connection_node.cpp
+                                        src/TwitterRequestHandler.cpp
+                                        src/OauthIdentity.cpp
+                                        src/base64.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -150,6 +155,9 @@ target_link_libraries(twitcher_connection_node
   ${catkin_LIBRARIES}
   ${CURL_LIBRARIES}
   ${Jsoncpp_LIBRARY}
+  ${OPENSSL_LIBRARIES}
+  ${OPENSSL_SSL_LIBRARY}
+  ${OPENSSL_CYRPTO_LIBRARY}
   curlpp
 )
 

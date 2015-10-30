@@ -66,7 +66,7 @@ OauthIdentity::OauthIdentity(std::string configFile, std::string apiUrl,
     accessTokenSecret = root["twitter_oauth"]["oauth_version"].asString();
 }
 
-std::string OauthIdentity::getAuthHeader()
+const std::string& OauthIdentity::getAuthHeader()
 {
     std::stringstream headerStream;
     
@@ -126,7 +126,7 @@ void OauthIdentity::signRequest()
     this->timestamp = std::string(std::to_string(time(NULL)));
     
     for(std::map<std::string, std::string>::iterator it = queryVals.begin();
-        it != queryVals.end(); ++i)
+        it != queryVals.end(); ++it)
         values[it->first] = curlpp::escape(it->second);
     
     values["oauth_consumer_key"] = consumerKey;
@@ -138,7 +138,7 @@ void OauthIdentity::signRequest()
     
     
     for(std::map<std::string, std::string>::iterator it = values.begin();
-            it != values.end(); ++i) {
+            it != values.end(); ++it) {
         parametersStream << it->first << "=" << it->second << "&"; 
     }
     
@@ -155,7 +155,7 @@ void OauthIdentity::signRequest()
     
     // Generate HMAC-SHA1 key
     unsigned char* hash = HMAC(EVP_sha1(), signingKey.c_str(), signingKey.length(),
-         (unsigned char*)dataString.c_str(), dataString.length, NULL, NULL);
+         (unsigned char*)dataString.c_str(), dataString.length(), NULL, NULL);
     
     //                                    v--SHA1 returns 20 bytes
     this->signature = base64_encode(hash, 20);
