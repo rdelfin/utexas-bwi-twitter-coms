@@ -17,6 +17,8 @@
 
 #include "twitcher_connection/TwitterMentions.h"
 
+#include <iostream>
+
 #include <curlpp/cURLpp.hpp>
 #include <curlpp/Easy.hpp>
 #include <curlpp/Options.hpp>
@@ -47,15 +49,23 @@ TwitterMentions::TwitterMentions(std::string configFile, int count,
     queryVals["contributor_details"] = (contributor_details ? "true" : "false");
     queryVals["include_entities"] = (include_entities ? "true" : "false");
     
+    path = "statuses/mentions_timeline";
     
-    callUrl << url << "statuses/mentions_timeline";
+    callUrl << url << path;
     
     identity = OauthIdentity(configFile, callUrl.str(), queryVals, "GET");
+    
+    req = nullptr;
+    
+    params = std::map<std::string,std::string>(queryVals.begin(), queryVals.end());
 }
 
-curlpp::Easy TwitterMentions::request()
+const curlpp::Easy& TwitterMentions::request()
 {
-    curlpp::Easy req;
+    if(req != nullptr)
+        delete req;
+    req = new curlpp::Easy;
+    
     std::stringstream fullUrl;
     std::list<std::string> headers;
     
@@ -73,13 +83,15 @@ curlpp::Easy TwitterMentions::request()
     
     headers.push_back(identity.getAuthHeader());
     
-    req.setOpt(new curlpp::Options::HttpHeader(headers));
-    req.setOpt(new curlpp::Options::Url(fullUrl.str()));
+    std::cout << "Setting auth header: " << headers << std::endl;
     
-    return req;
+    req->setOpt(new curlpp::Options::HttpHeader(headers));
+    req->setOpt(new curlpp::Options::Url(fullUrl.str()));
+    
+    return *req;
 }
 
 TwitterMentions::~TwitterMentions()
 {
-    
+     if(req != nullptr) delete req;
 }

@@ -30,7 +30,7 @@ public:
                     bool trim_user, bool contributor_details,
                     bool include_entities);
     
-    curlpp::Easy request();
+    const curlpp::Easy& request();
     
     ~TwitterMentions();
     
@@ -41,6 +41,8 @@ private:
     bool trim_user;
     bool contributor_details;
     bool include_entities;
+    
+    curlpp::Easy *req;
 };
 
 #endif // TWITTERMENTIONS_H

@@ -32,6 +32,7 @@
 #include <cstring>
 
 #include <openssl/hmac.h>
+#include <boost/config/posix_features.hpp>
 
 OauthIdentity::OauthIdentity(std::string consumerKey, std::string consumerSecret,
                   std::string accessToken, std::string accessTokenSecret, 
@@ -61,9 +62,10 @@ OauthIdentity::OauthIdentity(std::string configFile, std::string apiUrl,
     
     // This is the best notation I have ever seen
     consumerKey = root["twitter_oauth"]["oauth_consumer_key"].asString();
-    consumerSecret = root["twitter_oauth"]["oauth_signature"].asString();
+    consumerSecret = root["twitter_oauth"]["oauth_costumer_secret"].asString();
     accessToken = root["twitter_oauth"]["oauth_token"].asString();
-    accessTokenSecret = root["twitter_oauth"]["oauth_version"].asString();
+    accessTokenSecret = root["twitter_oauth"]["oauth_token_secret"].asString();
+    version = root["twitter_oauth"]["oauth_version"].asString();
 }
 
 const std::string& OauthIdentity::getAuthHeader()
@@ -152,6 +154,9 @@ void OauthIdentity::signRequest()
     signingKeyStream << curlpp::escape(consumerSecret)
                      << "&" << curlpp::escape(accessTokenSecret);
     signingKey  = signingKeyStream.str();
+    
+    std::cout << "String to hash:" << std::endl << "\t" << dataString <<
+                 std::endl << "Key: " << signingKey << std::endl;
     
     // Generate HMAC-SHA1 key
     unsigned char* hash = HMAC(EVP_sha1(), signingKey.c_str(), signingKey.length(),

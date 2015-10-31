@@ -21,6 +21,9 @@
 #include <json/json.h>
 #include <json/value.h>
 
+#include <curlpp/cURLpp.hpp>
+#include <curlpp/Easy.hpp>
+
 #include <sstream>
 #include <ctime>
 #include <iostream>
@@ -29,7 +32,7 @@
 #include <ros/ros.h>
 
 TwitterRequestHandler::TwitterRequestHandler()
-    : configFile("~/Documents/twitter_config.json")
+    : configFile("/home/rdelfin/Documents/twitter_config.json")
 {
     Json::Value root;   // 'root' will contain the root value after parsing.
     std::ifstream config_doc(configFile.c_str());
@@ -46,9 +49,16 @@ TwitterRequestHandler::TwitterRequestHandler(const TwitterRequestHandler& other)
     
 }
 
-std::string TwitterRequestHandler::makeRequest(std::string apiPath)
+std::string TwitterRequestHandler::makeRequest(TwitterApiCall* call)
 {
-    return "";
+    curlpp::Cleanup cleanup;
+    
+    const curlpp::Easy& request = call->request();
+    std::stringstream result;
+    
+    result << request;
+    
+    return result.str();
 }
 
 

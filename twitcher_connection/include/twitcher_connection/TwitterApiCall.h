@@ -41,7 +41,7 @@ class TwitterApiCall {
 public:
     TwitterApiCall(std::string configFile);
     
-    virtual curlpp::Easy request() = 0;
+    virtual const curlpp::Easy& request() = 0;
     
     virtual ~TwitterApiCall() { }
     

@@ -21,6 +21,8 @@
 #include <string>
 #include <map>
 
+#include "twitcher_connection/TwitterApiCall.h"
+
 class TwitterRequestHandler
 {
 public:
@@ -37,7 +39,7 @@ public:
      * 359 (in other words, make a request to the statuses/retweets/:id API),
      * then you would call makeRequest("statuses/retweets/id.json?count=5")
      */ 
-    std::string makeRequest(std::string apiPath);
+    std::string makeRequest(TwitterApiCall*);
     
     static TwitterRequestHandler& getInstance() { return _instance; }
     

@@ -16,15 +16,24 @@
  */
 
 #include <ros/ros.h>
+#include <string>
+
 #include "twitcher_connection/TwitterRequestHandler.h"
+#include "twitcher_connection/TwitterApiCall.h"
+#include "twitcher_connection/TwitterMentions.h"
 
 int main(int argc, char* argv[])
 {
-    ros::init(argc, argv, "twitcher_connection_node");
-    
-    ROS_INFO("Hello world!");
+    ros::init(argc, argv, "twitcher_connectiwhaon_node");
     
     TwitterRequestHandler handler;
+    
+    TwitterApiCall* api = new TwitterMentions("/home/rdelfin/Documents/twitter_config.json",
+                                              -1, -1, -1, false, true, true);
+    
+    std::string result = handler.makeRequest(api);
+    
+    ROS_INFO("We got dis!\n%s", result.c_str());
     
     while(ros::ok()) {
         ros::spinOnce();
