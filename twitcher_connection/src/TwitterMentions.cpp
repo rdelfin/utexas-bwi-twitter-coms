@@ -30,10 +30,12 @@ TwitterMentions::TwitterMentions(std::string configFile, int count,
                                  bool contributor_details,
                                  bool include_entities)
     : TwitterApiCall(configFile), count(count), since_id(since_id),
-      max_id(max_id), trim_user(trim_user), 
+      max_id(max_id), trim_user(trim_user),
       contributor_details(contributor_details),
       include_entities(include_entities)
 {
+    path = "statuses/mentions_timeline.json";
+    
     std::map<std::string, std::string> queryVals;
     std::stringstream callUrl;
     
@@ -48,8 +50,6 @@ TwitterMentions::TwitterMentions(std::string configFile, int count,
     queryVals["trim_user"] = (trim_user ? "true" : "false");
     queryVals["contributor_details"] = (contributor_details ? "true" : "false");
     queryVals["include_entities"] = (include_entities ? "true" : "false");
-    
-    path = "statuses/mentions_timeline";
     
     callUrl << url << path;
     

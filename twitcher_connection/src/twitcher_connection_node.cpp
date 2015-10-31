@@ -35,7 +35,4 @@ int main(int argc, char* argv[])
     
     ROS_INFO("We got dis!\n%s", result.c_str());
     
-    while(ros::ok()) {
-        ros::spinOnce();
-    }
 }

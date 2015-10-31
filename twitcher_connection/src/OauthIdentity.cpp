@@ -17,6 +17,7 @@
 
 #include "twitcher_connection/OauthIdentity.h"
 #include "twitcher_connection/base64.h"
+#include "twitcher_connection/HMAC_SHA1.h"
 
 #include <json/json.h>
 #include <json/value.h>
@@ -31,7 +32,6 @@
 #include <ctime>
 #include <cstring>
 
-#include <openssl/hmac.h>
 #include <boost/config/posix_features.hpp>
 
 OauthIdentity::OauthIdentity(std::string consumerKey, std::string consumerSecret,
@@ -77,7 +77,7 @@ const std::string& OauthIdentity::getAuthHeader()
     headerStream << "Authorization: OAuth "
                     "oauth_consumer_key=\"" << consumerKey << 
                     "\", oauth_nonce=\"" << nonce <<
-                    "\", oauth_signature=\"" << signature <<
+                    "\", oauth_signature=\"" << curlpp::escape(signature) <<
                     "\", oauth_signature_method=\"HMAC-SHA1\", "
                     "oauth_timestamp=\"" << timestamp <<
                     "\", oauth_token=\"" << accessToken <<
@@ -104,8 +104,8 @@ void OauthIdentity::generateOauthNonce()
     char c;
     std::stringstream resultStream;
     
-    // Generates 32 random characters and appends them to the resultStream
-    for(int i = 0; i < 32; i++)
+    // Generates 42 random characters and appends them to the resultStream
+    for(int i = 0; i < 42; i++)
     {
         c = charMap[rand() % 62];
         resultStream << c;
@@ -159,11 +159,16 @@ void OauthIdentity::signRequest()
                  std::endl << "Key: " << signingKey << std::endl;
     
     // Generate HMAC-SHA1 key
-    unsigned char* hash = HMAC(EVP_sha1(), signingKey.c_str(), signingKey.length(),
-         (unsigned char*)dataString.c_str(), dataString.length(), NULL, NULL);
+    CHMAC_SHA1 hmac_sha1;
+    unsigned char strDigest[255];
+    memset( strDigest, 0, 255);
+         
+    hmac_sha1.HMAC_SHA1((unsigned char*)dataString.c_str(), dataString.length(),
+                        (unsigned char*)signingKey.c_str(), signingKey.length(),
+                        strDigest);
     
     //                                    v--SHA1 returns 20 bytes
-    this->signature = base64_encode(hash, 20);
+    this->signature = base64_encode(strDigest, 20);
 }
 
 OauthIdentity::~OauthIdentity()

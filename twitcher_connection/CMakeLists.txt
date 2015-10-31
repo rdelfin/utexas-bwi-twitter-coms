@@ -15,12 +15,9 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
 )
 
+
 find_package(Jsoncpp REQUIRED)
 find_package(CURL REQUIRED)
-find_package(OpenSSL REQUIRED)
-
-## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -127,7 +124,6 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${CURL_INCLUDE_DIR}
   ${Jsoncpp_INCLUDE_DIR}
-  ${OpenSSL_INCLUDE_DIR}
 )
 
 ## Declare a C++ library
@@ -146,7 +142,9 @@ add_executable(twitcher_connection_node src/twitcher_connection_node.cpp
                                         src/OauthIdentity.cpp
                                         src/base64.cpp
                                         src/TwitterApiCall.cpp
-                                        src/TwitterMentions.cpp)
+                                        src/TwitterMentions.cpp
+                                        src/SHA1.cpp
+                                        src/HMAC_SHA1.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -157,9 +155,6 @@ target_link_libraries(twitcher_connection_node
   ${catkin_LIBRARIES}
   ${CURL_LIBRARIES}
   ${Jsoncpp_LIBRARY}
-  ${OPENSSL_LIBRARIES}
-  ${OPENSSL_SSL_LIBRARY}
-  ${OPENSSL_CYRPTO_LIBRARY}
   curlpp
 )
 
