@@ -46,6 +46,10 @@ TwitterRequestHandler::TwitterRequestHandler(const TwitterRequestHandler& other)
     
 }
 
+std::string TwitterRequestHandler::makeRequest(std::string apiPath)
+{
+    return "";
+}
 
 
 TwitterRequestHandler::~TwitterRequestHandler()

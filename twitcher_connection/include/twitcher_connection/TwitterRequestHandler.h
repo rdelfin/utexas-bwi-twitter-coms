@@ -19,6 +19,7 @@
 #define TWITTERREQUESTHANDLER_H
 
 #include <string>
+#include <map>
 
 class TwitterRequestHandler
 {
@@ -26,6 +27,17 @@ public:
     TwitterRequestHandler();
     TwitterRequestHandler(const TwitterRequestHandler& other);
     ~TwitterRequestHandler();
+    
+    /*
+     * Returns a string with the response from the API call made to the Twitter
+     * REST API. apiPath should contain the path to the API call (after the
+     * version number in the API URL) as well as any query parameters.
+     * 
+     * Example: If you want to get the first 5 retweets for the tweet with ID
+     * 359 (in other words, make a request to the statuses/retweets/:id API),
+     * then you would call makeRequest("statuses/retweets/id.json?count=5")
+     */ 
+    std::string makeRequest(std::string apiPath);
     
     static TwitterRequestHandler& getInstance() { return _instance; }
     

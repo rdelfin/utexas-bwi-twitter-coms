@@ -165,5 +165,3 @@ OauthIdentity::~OauthIdentity()
 {
 
 }
-
-
