@@ -18,10 +18,6 @@
 #include "twitcher_connection/OauthIdentity.h"
 #include "twitcher_connection/base64.h"
 
-#include <curlpp/cURLpp.hpp>
-#include <curlpp/Options.hpp>
-#include <curlpp/Easy.hpp>
-
 #include <json/json.h>
 #include <json/value.h>
 
@@ -54,6 +50,7 @@ OauthIdentity::OauthIdentity(std::string configFile, std::string apiUrl,
                               httpMethod(httpMethod)
 {
     srand(time(NULL));
+    
     Json::Value root;   // 'root' will contain the root value after parsing.
     std::ifstream config_doc(configFile.c_str());
     Json::Reader reader;
