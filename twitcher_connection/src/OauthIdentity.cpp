@@ -21,6 +21,9 @@
 #include <json/json.h>
 #include <json/value.h>
 
+#include <curlpp/Easy.hpp>
+#include <curlpp/cURLpp.hpp>
+
 #include <fstream>
 #include <map>
 #include <string>

@@ -144,7 +144,9 @@ include_directories(
 add_executable(twitcher_connection_node src/twitcher_connection_node.cpp
                                         src/TwitterRequestHandler.cpp
                                         src/OauthIdentity.cpp
-                                        src/base64.cpp)
+                                        src/base64.cpp
+                                        src/TwitterApiCall.cpp
+                                        src/TwitterMentions.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
