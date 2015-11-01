@@ -15,32 +15,31 @@
  * 
  */
 
-#ifndef TWITTERMENTIONS_H
-#define TWITTERMENTIONS_H
+#ifndef TWITTERUPDATESTATUS_H
+#define TWITTERUPDATESTATUS_H
 
 #include "twitcher_connection/TwitterApiCall.h"
 
-#include <curlpp/Easy.hpp>
 #include <string>
 
-class TwitterMentions : public TwitterApiCall
+class TwitterUpdateStatus : public TwitterApiCall
 {
 public:
-    TwitterMentions(std::string configFile, int count, int since_id, int max_id,
-                    bool trim_user, bool contributor_details,
-                    bool include_entities);
+    TwitterUpdateStatus(std::string configFile, std::string status,
+                        int in_reply_to_status_id, bool possibly_sensitive,
+                        bool trim_user);
     
     virtual const curlpp::Easy& request();
     
-    ~TwitterMentions();
+    ~TwitterUpdateStatus();
     
 private:
-    int count;
-    int since_id;
-    int max_id;
+    std::string status;
+    int in_reply_to_status_id;
+    bool possibly_sensitive;
     bool trim_user;
-    bool contributor_details;
-    bool include_entities;
+    
+    
 };
 
-#endif // TWITTERMENTIONS_H
+#endif // TWITTERUPDATESTATUS_H

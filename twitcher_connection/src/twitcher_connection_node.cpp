@@ -21,15 +21,18 @@
 #include "twitcher_connection/TwitterRequestHandler.h"
 #include "twitcher_connection/TwitterApiCall.h"
 #include "twitcher_connection/TwitterMentions.h"
+#include "twitcher_connection/TwitterUpdateStatus.h"
 
 int main(int argc, char* argv[])
 {
-    ros::init(argc, argv, "twitcher_connectiwhaon_node");
+    ros::init(argc, argv, "twitcher_connection_node");
     
     TwitterRequestHandler handler;
     
-    TwitterApiCall* api = new TwitterMentions("/home/rdelfin/Documents/twitter_config.json",
-                                              -1, -1, -1, false, true, true);
+    TwitterApiCall* api =
+        new TwitterUpdateStatus("/home/rdelfin/Documents/twitter_config.json", 
+                                "#deadbeefcafe is the best cafe #testingapi @HBD_Kevino",
+                                -1, false, false);
     
     std::string result = handler.makeRequest(api);
     

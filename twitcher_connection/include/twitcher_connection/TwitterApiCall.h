@@ -52,6 +52,7 @@ protected:
     std::string body;
     HttpMethod method;
     OauthIdentity identity;
+    curlpp::Easy *req;
 };
 
 #endif

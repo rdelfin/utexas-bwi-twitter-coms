@@ -143,6 +143,7 @@ add_executable(twitcher_connection_node src/twitcher_connection_node.cpp
                                         src/base64.cpp
                                         src/TwitterApiCall.cpp
                                         src/TwitterMentions.cpp
+                                        src/TwitterUpdateStatus.cpp
                                         src/SHA1.cpp
                                         src/HMAC_SHA1.cpp)
 
