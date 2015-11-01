@@ -15,11 +15,20 @@
  * 
  */
 
-#include <ros/ros.h>
+#include "twitcher_connection/TwitterApiCall.h"
 
-int main(int argc, char* argv[])
+#include <json/json.h>
+#include <json/value.h>
+
+#include <fstream>
+
+TwitterApiCall::TwitterApiCall(std::string configFile)
 {
-    ros::init(argc, argv, "twitcher_manager_node");
+    Json::Value root;   // 'root' will contain the root value after parsing.
+    std::ifstream config_doc(configFile.c_str());
+    Json::Reader reader;
+    reader.parse(config_doc, root);
     
-    ros::spin();
+    // This is the best notation I have ever seen
+    url = root["twitter_api_url"].asString();
 }
