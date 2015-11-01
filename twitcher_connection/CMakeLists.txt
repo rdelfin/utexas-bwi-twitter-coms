@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(twitcher_connection)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+MESSAGE("hi ${CMAKE_SOURCE_DIR}")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/utexas-bwi-twitter-coms/cmake/Modules/")
 include(LibFindMacros)
 
 set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
