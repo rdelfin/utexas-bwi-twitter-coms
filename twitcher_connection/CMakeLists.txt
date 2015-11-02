@@ -14,7 +14,10 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  actionlib
+  actionlib_msgs
 )
+
 
 
 find_package(Jsoncpp REQUIRED)
@@ -65,17 +68,19 @@ find_package(CURL REQUIRED)
 # )
 
 ## Generate actions in the 'action' folder
-# add_action_files(
-#   FILES
-#   Action1.action
-#   Action2.action
-# )
+ add_action_files(
+   DIRECTORY
+   action
+   FILES
+   SendTweet.action
+ )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+ generate_messages(
+   DEPENDENCIES
+   std_msgs
+   actionlib_msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -148,12 +153,31 @@ add_executable(twitcher_connection_node src/twitcher_connection_node.cpp
                                         src/SHA1.cpp
                                         src/HMAC_SHA1.cpp)
 
+add_executable(SendTweetServer src/SendTweetServer.cpp
+                                        src/TwitterRequestHandler.cpp
+                                        src/OauthIdentity.cpp
+                                        src/base64.cpp
+                                        src/TwitterApiCall.cpp
+                                        src/TwitterMentions.cpp
+                                        src/TwitterUpdateStatus.cpp
+                                        src/SHA1.cpp
+                                        src/HMAC_SHA1.cpp)
+
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(twitcher_connection_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+add_dependencies(SendTweetServer ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
 ## Specify libraries to link a library or executable target against
 target_link_libraries(twitcher_connection_node
+  ${catkin_LIBRARIES}
+  ${CURL_LIBRARIES}
+  ${Jsoncpp_LIBRARY}
+  curlpp
+)
+
+target_link_libraries(SendTweetServer
   ${catkin_LIBRARIES}
   ${CURL_LIBRARIES}
   ${Jsoncpp_LIBRARY}
@@ -207,3 +231,8 @@ target_link_libraries(twitcher_connection_node
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+
+catkin_package(
+  CATKIN_DEPENDS actionlib_msgs
+  )

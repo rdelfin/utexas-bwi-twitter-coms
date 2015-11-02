@@ -23,6 +23,8 @@
 #include "twitcher_connection/TwitterMentions.h"
 #include "twitcher_connection/TwitterUpdateStatus.h"
 
+#include <twitcher_connection/SendTweetAction.h>
+
 int main(int argc, char* argv[])
 {
     ros::init(argc, argv, "twitcher_connection_node");
@@ -37,5 +39,9 @@ int main(int argc, char* argv[])
     std::string result = handler.makeRequest(api);
     
     ROS_INFO("We got dis!\n%s", result.c_str());
+    //ros::spin();
+
+    return 0;
     
 }
+
