@@ -17,9 +17,32 @@
 
 #include <ros/ros.h>
 
+#include <actionlib/client/simple_action_client.h>
+
+#include "twitcher_connection/SendTweetAction.h"
+
 int main(int argc, char* argv[])
 {
+    if(argc != 2) {
+        ROS_INFO("This program only accepts one argument!");
+        exit(-1);
+    }
+    
     ros::init(argc, argv, "twitcher_manager_node");
+    
+    actionlib::SimpleActionClient<twitcher_connection::SendTweetAction> ac("send_tweet", true);
+    
+    twitcher_connection::SendTweetGoal goal;
+    goal.message = argv[1];
+    goal.account = "";
+    
+    
+    ac.waitForServer();
+    ac.sendGoal(goal);
+    
+    ac.waitForResult(ros::Duration(5));
+    
+    ROS_INFO("Tweet sent!");
     
     ros::spin();
 }
