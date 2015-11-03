@@ -24,6 +24,7 @@ public:
     as_(nh_, name, boost::bind(&SendTweetAction::executeCB, this, _1), false),
     action_name_(name)
   {
+      ROS_INFO("Action server starting");
     as_.start();
   }
 
@@ -46,7 +47,7 @@ public:
 	TwitterRequestHandler handler;
 
 	TwitterApiCall* api = 
-		new TwitterUpdateStatus("~/Documents/twitter_config.json", 
+		new TwitterUpdateStatus("/home/rdelfin/Documents/twitter_config.json", 
 	                                goal->message,
 	                                -1, false, false);
 
@@ -66,7 +67,9 @@ int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "SendTweet");
 
+    // Creates server
 	SendTweetAction sendTweet(ros::this_node::getName());
+    
 	ros::spin();
 
 	return 0;

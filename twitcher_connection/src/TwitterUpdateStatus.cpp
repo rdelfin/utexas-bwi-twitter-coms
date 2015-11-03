@@ -60,27 +60,29 @@ const curlpp::Easy& TwitterUpdateStatus::request()
     req = new curlpp::Easy;
     
     std::stringstream fullUrl;
+    std::stringstream paramStream;
     std::list<std::string> headers;
     
-    fullUrl << url << path << (params.size() == 0 ? "" : "?");
+    fullUrl << url << path;
     
     int i = 0;
     for(std::map<std::string, std::string>::iterator it = params.begin();
         it != params.end(); ++it) {
         
-        fullUrl << it->first << "=" << curlpp::escape(it->second);
+        paramStream << it->first << "=" << curlpp::escape(it->second);
         if(i < params.size() - 1)
-            fullUrl << "&";
+            paramStream << "&";
         i++;
     }
     
     headers.push_back(identity.getAuthHeader());
-    
-    std::cout << "Setting auth header: " << headers << std::endl;
+    headers.push_back("Content-Type: application/x-www-form-urlencoded");
     
     req->setOpt(new curlpp::Options::HttpHeader(headers));
     req->setOpt(new curlpp::Options::Url(fullUrl.str()));
     req->setOpt(new curlpp::Options::Post(true));
+    req->setOpt(new curlpp::Options::PostFields(paramStream.str()));
+    req->setOpt(new curlpp::Options::PostFieldSize(paramStream.str().length()));
     
     return *req;
 }
