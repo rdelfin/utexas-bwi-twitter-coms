@@ -5,12 +5,12 @@
 #include "twitcher_connection/TwitterMentions.h"
 #include "twitcher_connection/TwitterUpdateStatus.h"
 
-SendTweetServer::SendTweetServer(std::string name) :
+SendTweetServer::SendTweetServer(std::string name, TwitterRequestHandler handler) :
     as_(nh_, name, boost::bind(&SendTweetServer::executeCB, this, _1), false),
-    action_name_(name)
+    action_name_(name), handler(handler)
 {
     ROS_INFO("Action server starting");
-as_.start();
+    as_.start();
 }
 
 
@@ -25,8 +25,6 @@ void SendTweetServer::executeCB(const twitcher_connection::SendTweetGoalConstPtr
     ROS_INFO("Sending tweet: %s", goal->message.c_str());
 
     feedback_.progress+=10;
-
-    TwitterRequestHandler handler;
 
     TwitterApiCall* api = 
         new TwitterUpdateStatus("/home/rdelfin/Documents/twitter_config.json", 

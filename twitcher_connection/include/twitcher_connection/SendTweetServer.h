@@ -5,11 +5,12 @@
 
 #include <actionlib/server/simple_action_server.h>
 #include "twitcher_connection/SendTweetAction.h"
+#include "twitcher_connection/TwitterRequestHandler.h"
 
 class SendTweetServer
 {
 public:
-    SendTweetServer(std::string name);
+    SendTweetServer(std::string name, TwitterRequestHandler handler);
   
   void executeCB(const twitcher_connection::SendTweetGoalConstPtr &goal);
 
@@ -22,4 +23,5 @@ private:
 
     twitcher_connection::SendTweetFeedback feedback_;
     twitcher_connection::SendTweetResult result_;
+    TwitterRequestHandler& handler;
 };

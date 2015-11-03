@@ -41,14 +41,10 @@ public:
      */ 
     std::string makeRequest(TwitterApiCall*);
     
-    static TwitterRequestHandler& getInstance() { return _instance; }
-    
 private:
     std::string configFile;
     std::string authorizationHeader;
     std::string apiUrl;
-    
-    static TwitterRequestHandler _instance;
 };
 
 #endif // TWITTERREQUESTHANDLER_H

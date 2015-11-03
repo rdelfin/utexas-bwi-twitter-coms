@@ -15,35 +15,29 @@
  * 
  */
 
+#ifndef TWITTERMENTIONSMONITOR_H
+#define TWITTERMENTIONSMONITOR_H
+
 #include <ros/ros.h>
-#include <string>
 
 #include "twitcher_connection/TwitterRequestHandler.h"
-#include "twitcher_connection/TwitterApiCall.h"
-#include "twitcher_connection/TwitterMentions.h"
-#include "twitcher_connection/TwitterUpdateStatus.h"
-#include "twitcher_connection/SendTweetServer.h"
-#include "twitcher_connection/TwitterMentionsMonitor.h"
 
-#include <twitcher_connection/SendTweetAction.h>
-
-#include <actionlib/client/simple_action_client.h>
-
-int main(int argc, char* argv[])
+class TwitterMentionsMonitor
 {
-    ros::init(argc, argv, "twitcher_connection_node");
+public:
+    TwitterMentionsMonitor(ros::NodeHandle&, TwitterRequestHandler handler);
     
-    ros::NodeHandle nh;
+    void timerCallback(const ros::TimerEvent);
+    
+    ~TwitterMentionsMonitor();
+    
+private:
+    ros::Timer timer;
+    int lastTweetId;
+    
     TwitterRequestHandler handler;
     
-    TwitterMentionsMonitor monitor(nh, handler);
-    
-    /* Initialize a SendTweet Action server */
-    SendTweetServer sendTweet("send_tweet", handler);
-    
-    ros::spin();
+    void receiveNewMentions();
+};
 
-    return 0;
-    
-}
-
+#endif // TWITTERMENTIONSMONITOR_H

@@ -19,6 +19,7 @@
 #define TWITTERMENTIONS_H
 
 #include "twitcher_connection/TwitterApiCall.h"
+#include "twitcher_connection/TwitterRequestHandler.h"
 
 #include <curlpp/Easy.hpp>
 #include <string>
@@ -41,6 +42,8 @@ private:
     bool trim_user;
     bool contributor_details;
     bool include_entities;
+    
+    TwitterRequestHandler handler;
 };
 
 #endif // TWITTERMENTIONS_H
