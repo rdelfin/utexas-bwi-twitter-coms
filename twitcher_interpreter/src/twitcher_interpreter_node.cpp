@@ -17,36 +17,21 @@
 
 #include <ros/ros.h>
 
-#include <actionlib/client/simple_action_client.h>
-
-#include "twitcher_connection/Tweet.h"
 #include "twitcher_interpreter/dialog_message.h"
 
-ros::Publisher dialogMessagePublisher;
-
-void tweetReceived(const twitcher_connection::Tweet::ConstPtr&);
+void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr&);
 
 int main(int argc, char* argv[])
 {
-    ros::init(argc, argv, "twitcher_manager_node");
-    
+    ros::init(argc, argv, "twitcher_interpreter_node");
     ros::NodeHandle node;
     
-    dialogMessagePublisher = node.advertise<twitcher_interpreter::dialog_message>("dialog", 1000);
-    
-    ros::Subscriber subscriber = node.subscribe("twitter_mentions", 1000, 
-                                                tweetReceived);
+    ros::Subscriber subscriber = node.subscribe("dialog", 1000, messageReceiver);
     
     ros::spin();
 }
 
-
-void tweetReceived(const twitcher_connection::Tweet::ConstPtr& tweet)
+void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr& msg)
 {
-    twitcher_interpreter::dialog_message msg;
-    msg.message = tweet->message;
-    msg.user_id = tweet->sender;
-    msg.datetime = tweet->sentTime;
-    
-    dialogMessagePublisher.publish(msg);
+    // Do nothing for now
 }
