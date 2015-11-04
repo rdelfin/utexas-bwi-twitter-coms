@@ -22,6 +22,7 @@
 
 #include "twitcher_connection/TwitterRequestHandler.h"
 
+
 class TwitterMentionsMonitor
 {
 public:
@@ -33,9 +34,11 @@ public:
     
 private:
     ros::Timer timer;
-    int lastTweetId;
+    long lastTweetId;
     
     TwitterRequestHandler handler;
+    
+    ros::Publisher mention_publisher;
     
     void receiveNewMentions();
 };
