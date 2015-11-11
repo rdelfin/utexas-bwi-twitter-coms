@@ -68,7 +68,7 @@ void GoToLocation::executeAction(const twitcher_actions::GoToLocationGoal::Const
     while(ros::ok() && !client.getState().isDone())
         wait_rate.sleep();
     
-    // Changed language of the message
+    // Changed language of the message because why not
     ROS_ERROR("Que la chingada");
         
     if (!client.getState().isDone()) {
