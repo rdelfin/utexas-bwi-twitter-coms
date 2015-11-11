@@ -15,23 +15,60 @@
  * 
  */
 
+#include <iostream>
+#include <boost/regex.hpp>
+
 #include <ros/ros.h>
+#include <actionlib/client/simple_action_client.h>
+
+#include <twitcher_actions/GoToLocationAction.h>
 
 #include "twitcher_interpreter/dialog_message.h"
+
+ros::NodeHandle node;
+boost::regex goToTweetRegex;
+actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>* client;
+
 
 void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr&);
 
 int main(int argc, char* argv[])
 {
+    
+    goToTweetRegex = boost::regex("(?<=Go to room )l3_([\\d]{3}|414[ab])$",
+                                  boost::regex::icase);
+    
     ros::init(argc, argv, "twitcher_interpreter_node");
-    ros::NodeHandle node;
+    node = ros::NodeHandle();
+    
+    client = new actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>(node, "GoToLocation", true);
+    
+    client->waitForServer();
     
     ros::Subscriber subscriber = node.subscribe("dialog", 1000, messageReceiver);
     
     ros::spin();
+    
+    delete client;
 }
 
 void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr& msg)
 {
-    // Do nothing for now
+    boost::smatch matchResult;
+                          
+    std::string message = msg->message;
+    boost::match_flag_type flags = boost::match_default;
+    
+    /* If regex matches for current tweet, then service request */
+    if(boost::regex_search(message, matchResult, goToTweetRegex, flags)) {
+        
+        
+        std::string dialogMessage = msg->message;
+        twitcher_actions::GoToLocationGoal goal;
+        std::string location = "l3_";
+        location += matchResult[0];
+        goal.location_name = location;
+        
+        client->sendGoal(goal);
+    }
 }

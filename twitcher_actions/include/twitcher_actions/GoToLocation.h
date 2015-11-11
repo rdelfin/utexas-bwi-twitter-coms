@@ -28,6 +28,7 @@ class GoToLocation : public RobotAction<twitcher_actions::GoToLocationAction,
                                         twitcher_actions::GoToLocationResult>
 {
 public:
+    GoToLocation();
     GoToLocation(ros::NodeHandle node);
     virtual ~GoToLocation();
 protected:

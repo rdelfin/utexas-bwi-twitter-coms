@@ -23,21 +23,13 @@
 
 #include <vector>
 
-std::vector<RobotAction *> actions;
-
 int main (int argc, char* argv[])
 {
     ros::init(argc, argv, "twitcher_actions");
     ros::NodeHandle n;
     
     // Add all action servers to the list of actions.
-    actions.push_back(new GoToLocation(n));
+    GoToLocation locationServer(n);
     
     ros::spin();
-    
-    // Frees all actions
-    while(actions.size()) {
-        free(actions[actions.size() - 1]);
-        actions.pop_back();
-    }
 }

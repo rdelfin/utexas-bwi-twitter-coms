@@ -25,6 +25,16 @@
 
 typedef actionlib::SimpleActionClient<bwi_kr_execution::ExecutePlanAction> Client;
 
+GoToLocation::GoToLocation()
+    : RobotAction<twitcher_actions::GoToLocationAction,
+                  twitcher_actions::GoToLocationGoal,
+                  twitcher_actions::GoToLocationFeedback,
+                  twitcher_actions::GoToLocationResult>()
+{
+
+}
+
+
 GoToLocation::GoToLocation(ros::NodeHandle node)
     : RobotAction<twitcher_actions::GoToLocationAction,
                   twitcher_actions::GoToLocationGoal,

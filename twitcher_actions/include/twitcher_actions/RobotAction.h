@@ -25,19 +25,25 @@
 template <typename Action, typename Goal, typename Feedback, typename Result>
 class RobotAction {
 public:
-    RobotAction(std::string server_name, ros::NodeHandle node)
-      : node(node),
-        server(node, server_name, boost::bind(&RobotAction<Action, Goal, Feedback, Result>::executeAction, this, _1), false)
-    {
-        server.start();
+    RobotAction() {
     }
     
-    virtual ~RobotAction() { }
+    RobotAction(std::string server_name, ros::NodeHandle node)
+      : node(node)
+    {
+        server = new actionlib::SimpleActionServer<Action>(node,
+                                                           server_name, 
+                                                           boost::bind(&RobotAction<Action, Goal, Feedback, Result>::executeAction, this, _1),
+                                                           false);
+        server->start();
+    }
+    
+    virtual ~RobotAction() { delete server; }
 protected:
     virtual void executeAction(const typename Goal::ConstPtr &goal) = 0;
     
-    ros::NodeHandle& node;
-    actionlib::SimpleActionServer<Action> server;
+    ros::NodeHandle node;
+    actionlib::SimpleActionServer<Action>* server;
 };
 
 
