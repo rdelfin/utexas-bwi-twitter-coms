@@ -63,7 +63,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate actions in the 'action' folder
 add_action_files(
   FILES
-  go_to_location.action
+  GoToLocation.action
 )
 
 ## Generate added messages and services with any dependencies listed here
@@ -116,6 +116,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -130,7 +131,8 @@ include_directories(
 # add_dependencies(twitcher_actions ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-add_executable(twitcher_actions_node src/twitcher_actions_node.cpp)
+add_executable(twitcher_actions_node src/twitcher_actions_node.cpp
+                                     src/GoToLocation.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above

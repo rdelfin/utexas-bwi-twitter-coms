@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Ricardo Delfin Garcia <ricardo.delfin.garcia@gmail.com>
+ * Copyright 2015 <copyright holder> <email>
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,23 @@
  * 
  */
 
-#include <ros/ros.h>
-#include <twitcher_actions/GoToLocationAction.h>
+#include "twitcher_actions/GoToLocation.h"
 
-int main (int argc, char* argv[])
+GoToLocation::GoToLocation(ros::NodeHandle node)
+    : RobotAction<twitcher_actions::GoToLocationAction,
+                  twitcher_actions::GoToLocationGoal,
+                  twitcher_actions::GoToLocationFeedback,
+                  twitcher_actions::GoToLocationResult>("GoToLocation", node)
 {
-    ros::init(argc, argv, "twitcher_actions");
     
-    ros::NodeHandle n;
+}
+
+GoToLocation::~GoToLocation()
+{
+
+}
+
+void GoToLocation::executeAction(const twitcher_actions::GoToLocationGoal::ConstPtr& goal)
+{
     
-    ros::spin();
 }
