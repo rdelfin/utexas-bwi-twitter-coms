@@ -25,7 +25,6 @@
 
 #include "twitcher_interpreter/dialog_message.h"
 
-ros::NodeHandle node;
 boost::regex goToTweetRegex;
 actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>* client;
 
@@ -39,7 +38,7 @@ int main(int argc, char* argv[])
                                   boost::regex::icase);
     
     ros::init(argc, argv, "twitcher_interpreter_node");
-    node = ros::NodeHandle();
+    ros::NodeHandle node;
     
     client = new actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>(node, "GoToLocation", true);
     
@@ -65,9 +64,7 @@ void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr& msg)
         
         std::string dialogMessage = msg->message;
         twitcher_actions::GoToLocationGoal goal;
-        std::string location = "l3_";
-        location += matchResult[0];
-        goal.location_name = location;
+        goal.location_name = matchResult[0];
         
         client->sendGoal(goal);
     }
