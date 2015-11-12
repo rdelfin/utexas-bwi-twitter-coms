@@ -15,35 +15,39 @@
  * 
  */
 
+#ifndef TWITTERMENTIONSMONITOR_H
+#define TWITTERMENTIONSMONITOR_H
+
 #include <ros/ros.h>
-#include <string>
 
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include "twitcher_connection/TwitterRequestHandler.h"
-#include "twitcher_connection/TwitterApiCall.h"
-#include "twitcher_connection/TwitterMentions.h"
-#include "twitcher_connection/TwitterUpdateStatus.h"
-#include "twitcher_connection/SendTweetServer.h"
-#include "twitcher_connection/TwitterMentionsMonitor.h"
 
-#include <twitcher_connection/SendTweetAction.h>
 
-#include <actionlib/client/simple_action_client.h>
-
-int main(int argc, char* argv[])
+class TwitterMentionsMonitor
 {
-    ros::init(argc, argv, "twitcher_connection_node");
+public:
+    TwitterMentionsMonitor(ros::NodeHandle&, TwitterRequestHandler handler);
     
-    ros::NodeHandle nh;
+    void timerCallback(const ros::TimerEvent);
+    
+    ~TwitterMentionsMonitor();
+    
+private:
+    ros::Timer timer;
+    long lastTweetId;
+    
     TwitterRequestHandler handler;
     
-    TwitterMentionsMonitor monitor(nh, handler);
+    ros::Publisher mention_publisher;
     
-    /* Initialize a SendTweet Action server */
-    SendTweetServer sendTweet("send_tweet", handler);
+    void receiveNewMentions();
     
-    ros::spin();
+    
+    bool IsDateAfterStart(std::string date);
+    std::string ToIsoString (std::string date);
+    
+    boost::posix_time::ptime start;
+};
 
-    return 0;
-    
-}
-
+#endif // TWITTERMENTIONSMONITOR_H

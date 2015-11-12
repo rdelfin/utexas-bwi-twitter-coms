@@ -1,4 +1,4 @@
 string message
 string sender
-time sentTime
+string sentTime
 int64 id

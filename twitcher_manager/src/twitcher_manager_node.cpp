@@ -19,30 +19,34 @@
 
 #include <actionlib/client/simple_action_client.h>
 
-#include "twitcher_connection/SendTweetAction.h"
+#include "twitcher_connection/Tweet.h"
+#include "twitcher_interpreter/dialog_message.h"
+
+ros::Publisher dialogMessagePublisher;
+
+void tweetReceived(const twitcher_connection::Tweet::ConstPtr&);
 
 int main(int argc, char* argv[])
 {
-    if(argc != 2) {
-        ROS_INFO("This program only accepts one argument!");
-        exit(-1);
-    }
-    
     ros::init(argc, argv, "twitcher_manager_node");
     
-    actionlib::SimpleActionClient<twitcher_connection::SendTweetAction> ac("send_tweet", true);
+    ros::NodeHandle node;
     
-    twitcher_connection::SendTweetGoal goal;
-    goal.message = argv[1];
-    goal.account = "";
+    dialogMessagePublisher = node.advertise<twitcher_interpreter::dialog_message>("dialog", 1000);
     
-    
-    ac.waitForServer();
-    ac.sendGoal(goal);
-    
-    ac.waitForResult(ros::Duration(5));
-    
-    ROS_INFO("Tweet sent!");
+    ros::Subscriber subscriber = node.subscribe("twitter_mentions", 1000, 
+                                                tweetReceived);
     
     ros::spin();
+}
+
+
+void tweetReceived(const twitcher_connection::Tweet::ConstPtr& tweet)
+{
+    twitcher_interpreter::dialog_message msg;
+    msg.message = tweet->message;
+    msg.user_id = tweet->sender;
+    msg.datetime = tweet->sentTime;
+    
+    dialogMessagePublisher.publish(msg);
 }

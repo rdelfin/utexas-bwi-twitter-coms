@@ -18,6 +18,8 @@
 #ifndef TWITTERREQUESTHANDLER_H
 #define TWITTERREQUESTHANDLER_H
 
+#include <json/json.h>
+
 #include <string>
 #include <map>
 
@@ -41,14 +43,10 @@ public:
      */ 
     std::string makeRequest(TwitterApiCall*);
     
-    static TwitterRequestHandler& getInstance() { return _instance; }
-    
 private:
     std::string configFile;
     std::string authorizationHeader;
     std::string apiUrl;
-    
-    static TwitterRequestHandler _instance;
 };
 
 #endif // TWITTERREQUESTHANDLER_H

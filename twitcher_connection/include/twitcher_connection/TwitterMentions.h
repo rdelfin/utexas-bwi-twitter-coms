@@ -19,6 +19,7 @@
 #define TWITTERMENTIONS_H
 
 #include "twitcher_connection/TwitterApiCall.h"
+#include "twitcher_connection/TwitterRequestHandler.h"
 
 #include <curlpp/Easy.hpp>
 #include <string>
@@ -26,7 +27,7 @@
 class TwitterMentions : public TwitterApiCall
 {
 public:
-    TwitterMentions(std::string configFile, int count, int since_id, int max_id,
+    TwitterMentions(std::string configFile, int count, long since_id, long max_id,
                     bool trim_user, bool contributor_details,
                     bool include_entities);
     
@@ -36,11 +37,13 @@ public:
     
 private:
     int count;
-    int since_id;
-    int max_id;
+    long since_id;
+    long max_id;
     bool trim_user;
     bool contributor_details;
     bool include_entities;
+    
+    TwitterRequestHandler handler;
 };
 
 #endif // TWITTERMENTIONS_H

@@ -155,9 +155,6 @@ void OauthIdentity::signRequest()
                      << "&" << curlpp::escape(accessTokenSecret);
     signingKey  = signingKeyStream.str();
     
-    std::cout << "String to hash:" << std::endl << "\t" << dataString <<
-                 std::endl << "Key: " << signingKey << std::endl;
-    
     // Generate HMAC-SHA1 key
     CHMAC_SHA1 hmac_sha1;
     unsigned char strDigest[255];

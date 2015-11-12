@@ -19,6 +19,8 @@
 
 #include <iostream>
 
+#include <ros/ros.h>
+
 #include <curlpp/cURLpp.hpp>
 #include <curlpp/Easy.hpp>
 #include <curlpp/Options.hpp>
@@ -26,7 +28,7 @@
 #include <sstream>
 
 TwitterMentions::TwitterMentions(std::string configFile, int count,
-                                 int since_id, int max_id, bool trim_user,
+                                 long since_id, long max_id, bool trim_user,
                                  bool contributor_details,
                                  bool include_entities)
     : TwitterApiCall(configFile), count(count), since_id(since_id),
@@ -43,8 +45,9 @@ TwitterMentions::TwitterMentions(std::string configFile, int count,
     
     if(count > 0)
         queryVals["count"] = std::to_string(count);
-    if(since_id > 0)
+    if(since_id > 0) {
         queryVals["since_id"] = std::to_string(since_id);
+    }
     if(max_id > 0)
         queryVals["max_id"] = std::to_string(max_id);
     queryVals["trim_user"] = (trim_user ? "true" : "false");
@@ -82,8 +85,6 @@ const curlpp::Easy& TwitterMentions::request()
     }
     
     headers.push_back(identity.getAuthHeader());
-    
-    std::cout << "Setting auth header: " << headers << std::endl;
     
     req->setOpt(new curlpp::Options::HttpHeader(headers));
     req->setOpt(new curlpp::Options::Url(fullUrl.str()));

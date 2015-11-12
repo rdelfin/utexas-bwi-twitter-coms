@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(twitcher_connection)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+message("Twitcher connection source dir is \"${CMAKE_SOURCE_DIR}\"")
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/twitter/cmake/Modules/")
 include(LibFindMacros)
 
 set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
@@ -53,11 +55,10 @@ find_package(CURL REQUIRED)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  Tweet.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -151,7 +152,8 @@ add_executable(twitcher_connection_node src/twitcher_connection_node.cpp
                                         src/TwitterUpdateStatus.cpp
                                         src/SHA1.cpp
                                         src/HMAC_SHA1.cpp
-                                        src/SendTweetServer.cpp)
+                                        src/SendTweetServer.cpp
+                                        src/TwitterMentionsMonitor.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
