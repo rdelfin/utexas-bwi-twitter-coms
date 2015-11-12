@@ -20,6 +20,7 @@
 
 #include <ros/ros.h>
 
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include "twitcher_connection/TwitterRequestHandler.h"
 
 
@@ -41,6 +42,12 @@ private:
     ros::Publisher mention_publisher;
     
     void receiveNewMentions();
+    
+    
+    bool IsDateAfterStart(std::string date);
+    std::string ToIsoString (std::string date);
+    
+    boost::posix_time::ptime start;
 };
 
 #endif // TWITTERMENTIONSMONITOR_H

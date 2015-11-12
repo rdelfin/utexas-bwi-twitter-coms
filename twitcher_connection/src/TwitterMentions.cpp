@@ -46,7 +46,6 @@ TwitterMentions::TwitterMentions(std::string configFile, int count,
     if(count > 0)
         queryVals["count"] = std::to_string(count);
     if(since_id > 0) {
-        ROS_INFO("Since ID set! Value: %ld", since_id);
         queryVals["since_id"] = std::to_string(since_id);
     }
     if(max_id > 0)
@@ -86,8 +85,6 @@ const curlpp::Easy& TwitterMentions::request()
     }
     
     headers.push_back(identity.getAuthHeader());
-    
-    std::cout << "Setting auth header: " << headers << std::endl;
     
     req->setOpt(new curlpp::Options::HttpHeader(headers));
     req->setOpt(new curlpp::Options::Url(fullUrl.str()));

@@ -16,6 +16,9 @@
  */
 
 #include <json/json.h>
+#include <boost/date_time.hpp>
+#include <boost/date_time/posix_time/posix_time_io.hpp>
+#include <boost/thread/pthread/mutex.hpp>
 
 #include "twitcher_connection/TwitterMentionsMonitor.h"
 #include "twitcher_connection/TwitterMentions.h"
@@ -30,8 +33,11 @@ TwitterMentionsMonitor::TwitterMentionsMonitor(ros::NodeHandle& nh,
      * process all the tweets and send them as messages through a topic */
     timer = nh.createTimer(ros::Duration(60.0), boost::bind(&TwitterMentionsMonitor::timerCallback, this, _1));
     mention_publisher = nh.advertise<twitcher_connection::Tweet>("twitter_mentions", 1000);
+    start = boost::posix_time::second_clock::universal_time();
+    
+    receiveNewMentions();
 }
-
+    
 void TwitterMentionsMonitor::timerCallback(const ros::TimerEvent te)
 {
     receiveNewMentions();
@@ -39,11 +45,16 @@ void TwitterMentionsMonitor::timerCallback(const ros::TimerEvent te)
 
 void TwitterMentionsMonitor::receiveNewMentions()
 {
+    ROS_INFO_STREAM("Receiving new mentions... Start (UTC): "
+                    << boost::posix_time::to_iso_string(start));
+    
     TwitterApiCall* call = new TwitterMentions(
         "/home/rdelfin/Documents/twitter_config.json", -1, lastTweetId, -1,
         false, false, false);
     
     std::string result = handler.makeRequest(call);
+    
+    if(result == "" || result == "[]") return;
     
     Json::Value root;
     Json::Reader reader;
@@ -54,18 +65,72 @@ void TwitterMentionsMonitor::receiveNewMentions()
     
     // Iterate in reverse temporal order
     for(int i = root.size() - 1; i >= 0; i--) {
-        twitcher_connection::Tweet tweet;
-        tweet.id = root[(int)i]["id"].asInt64();
-        tweet.message = root[(int)i]["text"].asString();
-        tweet.sender = root[(int)i]["user"]["id_str"].asString();
+        ROS_INFO("Processing tweet. Information:");
+        ROS_INFO_STREAM("\tMessage: " << root[(int)i]["text"].asString());
+        ROS_INFO_STREAM("\tSent Time (ISO): " << ToIsoString(root[(int)i]["created_at"].asString()));
         
-        mention_publisher.publish<twitcher_connection::Tweet>(tweet);
+        if(IsDateAfterStart(root[(int)i]["created_at"].asString())) {
+            ROS_INFO("Accepted! Forwarding...");
+            twitcher_connection::Tweet tweet;
+            tweet.id = root[(int)i]["id"].asInt64();
+            tweet.message = root[(int)i]["text"].asString();
+            tweet.sender = root[(int)i]["user"]["id_str"].asString();
+            tweet.sentTime = ToIsoString(root[(int)i]["created_at"].asString());
+            
+            mention_publisher.publish<twitcher_connection::Tweet>(tweet);
+            
+        }
     }
     
     delete call;
     
     ROS_INFO("We received the following mentions:");
     ROS_INFO("%s", result.c_str());
+}
+
+bool TwitterMentionsMonitor::IsDateAfterStart(std::string date)
+{
+    std::stringstream dateStream;   
+    dateStream.exceptions(std::ios_base::failbit);
+    
+    boost::posix_time::time_input_facet *facet = new boost::posix_time::time_input_facet("%a %b %d %H:%M:%S +0000 %Y"); // "Mon Sep 03 13:24:14 +0000 2012"
+    boost::posix_time::ptime time;
+    
+    // Get the current time in UTC for comparison
+    
+    // Setup date stream to output using facet
+    dateStream.str(date); 
+    dateStream.imbue(std::locale(dateStream.getloc(), facet));
+    
+    // Convert
+    dateStream >> time;
+    
+    //delete facet;
+    
+    // Compare to the time the server started (NOT the current time)
+    return start < time;
+}
+
+std::string TwitterMentionsMonitor::ToIsoString(std::string date)
+{
+    std::stringstream dateStream;
+    // Throw expception if date is formatted differently
+    dateStream.exceptions(std::ios_base::failbit);
+    
+    // Format for the input Twitter date
+    boost::posix_time::time_input_facet *facet = new boost::posix_time::time_input_facet("%a %b %d %H:%M:%S +0000 %Y"); // "Mon Sep 03 13:24:14 +0000 2012"
+    boost::posix_time::ptime time;
+    
+    // Setup date stream to output using facet
+    dateStream.str(date); 
+    dateStream.imbue(std::locale(dateStream.getloc(), facet));
+    
+    // Convert
+    dateStream >> time;
+    
+    //delete facet;
+    
+    return boost::posix_time::to_iso_string(time);
 }
 
 
