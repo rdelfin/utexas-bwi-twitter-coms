@@ -35,7 +35,7 @@ void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr&);
 int main(int argc, char* argv[])
 {
     
-    goToTweetRegex = boost::regex("(?<=Go to room )l3_([\\d]{3}|414[ab])$",
+    goToTweetRegex = boost::regex("(?<=Go to room )l3_([\\d]{3}|414[ab])",
                                   boost::regex::icase);
     
     ros::init(argc, argv, "twitcher_interpreter_node");
