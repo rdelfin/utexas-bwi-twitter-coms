@@ -43,6 +43,8 @@ int main(int argc, char* argv[])
 
 void tweetReceived(const twitcher_connection::Tweet::ConstPtr& tweet)
 {
+    ROS_INFO_STREAM("Manager received tweet from /twitter_mentions. Content: \""
+                    << tweet->message << "\". Forwarding to /dialog");
     twitcher_interpreter::dialog_message msg;
     msg.message = tweet->message;
     msg.user_id = tweet->sender;

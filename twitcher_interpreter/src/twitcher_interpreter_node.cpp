@@ -44,6 +44,8 @@ int main(int argc, char* argv[])
     
     client->waitForServer();
     
+    ROS_INFO_STREAM("Twitcher Interpreter Node up, listening on /GoToLocation");
+    
     ros::Subscriber subscriber = node.subscribe("dialog", 1000, messageReceiver);
     
     ros::spin();
@@ -53,6 +55,8 @@ int main(int argc, char* argv[])
 
 void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr& msg)
 {
+    ROS_INFO_STREAM("Interpreter received message: \"" << msg->message << 
+                    "\" with timestamp " << msg->datetime);
     boost::smatch matchResult;
                           
     std::string message = msg->message;

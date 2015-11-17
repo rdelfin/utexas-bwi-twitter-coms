@@ -41,7 +41,7 @@ GoToLocation::GoToLocation(ros::NodeHandle node)
                   twitcher_actions::GoToLocationFeedback,
                   twitcher_actions::GoToLocationResult>("GoToLocation", node)
 {
-    
+    ROS_INFO_STREAM("/GoToLocation action server set up");
 }
 
 GoToLocation::~GoToLocation()
