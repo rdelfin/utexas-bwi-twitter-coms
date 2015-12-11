@@ -37,7 +37,7 @@ void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr&);
 int main(int argc, char* argv[])
 {
     
-    goToTweetRegex = boost::regex("(?<=Go to room )l3_([\\d]{3}|414[ab])",
+    goToTweetRegex = boost::regex("(?<=Go to room )l3_((414[ab])|[\\d]{3})",
                                   boost::regex::icase);
     
     ros::init(argc, argv, "twitcher_interpreter_node");
@@ -77,13 +77,14 @@ void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr& msg)
         twitcher_actions::GoToLocationGoal goal;
         goal.location_name = matchResult[0];
         
-        
         tweet_stream << "@" << msg->user_id << " Alright, going to " << matchResult[0];
+	tweet_goal.message = tweet_stream.str();
+	tweet_client->sendGoal(tweet_goal);
+	client->sendGoal(goal);
     }
-    else
+    else {
         tweet_stream << "@" << msg->user_id << " Sorry, I don't understand."; 
-    
-    
-    tweet_goal->message = tweet_stream.str();
-    tweet_client->sendGoal(tweet_goal);
+	tweet_goal.message = tweet_stream.str();
+	tweet_client->sendGoal(tweet_goal);
+    }    
 }

@@ -51,6 +51,7 @@ GoToLocation::~GoToLocation()
 
 void GoToLocation::executeAction(const twitcher_actions::GoToLocationGoal::ConstPtr& goal)
 {
+    ROS_INFO_STREAM("GOING TO LOCATION: " << goal->location_name);
     // Wait for action executor server to start up
     Client client("action_executor/execute_plan", true);
     client.waitForServer();
