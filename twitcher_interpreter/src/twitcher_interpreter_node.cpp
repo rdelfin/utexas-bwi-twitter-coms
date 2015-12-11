@@ -27,6 +27,7 @@
 
 boost::regex goToTweetRegex;
 actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>* client;
+actionlib::SimpleActionClient<twitcher_connection::SendTweetAction>* tweet_client;
 
 
 void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr&);
@@ -41,16 +42,18 @@ int main(int argc, char* argv[])
     ros::NodeHandle node;
     
     client = new actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>(node, "GoToLocation", true);
-    
+
+    tweet_client = new actionlib::SimpleActionClient<twitcher_connection::SendTweetAction>(node, "SendTweet",true);
     client->waitForServer();
     
+    tweet_client->waitForServer();
     ROS_INFO_STREAM("Twitcher Interpreter Node up, listening on /GoToLocation");
     
     ros::Subscriber subscriber = node.subscribe("dialog", 1000, messageReceiver);
     
     ros::spin();
     
-    delete client;
+/    delete client;
 }
 
 void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr& msg)
@@ -61,15 +64,27 @@ void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr& msg)
                           
     std::string message = msg->message;
     boost::match_flag_type flags = boost::match_default;
+
+    std::stringstream tweet_stream;
+    twitcher_connection::SendTweetGoal tweet_goal;
     
     /* If regex matches for current tweet, then service request */
     if(boost::regex_search(message, matchResult, goToTweetRegex, flags)) {
         
-        
+        ROS_INFO("")
         std::string dialogMessage = msg->message;
         twitcher_actions::GoToLocationGoal goal;
         goal.location_name = matchResult[0];
         
+        
+        tweet_stream << msg->user_id << " Alright, going to " << matchResult[0]; 
+        tweet_goal->message = tweet_stream->str();
+
         client->sendGoal(goal);
     }
+    else
+        tweet_stream << msg->user_id << " Sorry, I don't understand."; 
+    
+    tweet_goal->message = tweet_stream->str();
+    tweet_client->sendGoal(tweet_goal);
 }

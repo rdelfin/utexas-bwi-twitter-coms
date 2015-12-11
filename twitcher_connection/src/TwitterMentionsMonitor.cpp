@@ -50,12 +50,14 @@ void TwitterMentionsMonitor::receiveNewMentions()
     
     TwitterApiCall* call = new TwitterMentions(
         "/home/rdelfin/Documents/twitter_config.json", -1, lastTweetId, -1,
-        false, false, false);
+        false, true, false);
     
     std::string result = handler.makeRequest(call);
     
+    // Error handling
     if(result == "" || result == "[]") return;
     
+
     Json::Value root;
     Json::Reader reader;
     reader.parse(result, root);
@@ -74,7 +76,7 @@ void TwitterMentionsMonitor::receiveNewMentions()
             twitcher_connection::Tweet tweet;
             tweet.id = root[(int)i]["id"].asInt64();
             tweet.message = root[(int)i]["text"].asString();
-            tweet.sender = root[(int)i]["user"]["id_str"].asString();
+            tweet.sender = root[(int)i]["user"]["screen_name"].asString();
             tweet.sentTime = ToIsoString(root[(int)i]["created_at"].asString());
             
             mention_publisher.publish<twitcher_connection::Tweet>(tweet);
