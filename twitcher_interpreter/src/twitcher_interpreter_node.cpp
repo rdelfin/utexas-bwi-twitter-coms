@@ -25,6 +25,8 @@
 
 #include "twitcher_interpreter/dialog_message.h"
 
+#include <twitcher_connection/SendTweetAction.h>
+
 boost::regex goToTweetRegex;
 actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>* client;
 actionlib::SimpleActionClient<twitcher_connection::SendTweetAction>* tweet_client;
@@ -43,7 +45,7 @@ int main(int argc, char* argv[])
     
     client = new actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>(node, "GoToLocation", true);
 
-    tweet_client = new actionlib::SimpleActionClient<twitcher_connection::SendTweetAction>(node, "SendTweet",true);
+    tweet_client = new actionlib::SimpleActionClient<twitcher_connection::SendTweetAction>(node, "send_tweet",true);
     client->waitForServer();
     
     tweet_client->waitForServer();
@@ -53,7 +55,8 @@ int main(int argc, char* argv[])
     
     ros::spin();
     
-/    delete client;
+    delete client;
+    delete tweet_client;
 }
 
 void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr& msg)
@@ -70,21 +73,17 @@ void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr& msg)
     
     /* If regex matches for current tweet, then service request */
     if(boost::regex_search(message, matchResult, goToTweetRegex, flags)) {
-        
-        ROS_INFO("")
         std::string dialogMessage = msg->message;
         twitcher_actions::GoToLocationGoal goal;
         goal.location_name = matchResult[0];
         
         
-        tweet_stream << msg->user_id << " Alright, going to " << matchResult[0]; 
-        tweet_goal->message = tweet_stream->str();
-
-        client->sendGoal(goal);
+        tweet_stream << "@" << msg->user_id << " Alright, going to " << matchResult[0];
     }
     else
-        tweet_stream << msg->user_id << " Sorry, I don't understand."; 
+        tweet_stream << "@" << msg->user_id << " Sorry, I don't understand."; 
     
-    tweet_goal->message = tweet_stream->str();
+    
+    tweet_goal->message = tweet_stream.str();
     tweet_client->sendGoal(tweet_goal);
 }

@@ -37,5 +37,4 @@ void SendTweetServer::executeCB(const twitcher_connection::SendTweetGoalConstPtr
 
     ROS_INFO("Tweet sent");
     as_.setSucceeded(result_);
-
 }
