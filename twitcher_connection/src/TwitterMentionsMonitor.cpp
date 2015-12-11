@@ -49,7 +49,7 @@ void TwitterMentionsMonitor::receiveNewMentions()
                     << boost::posix_time::to_iso_string(start));
     
     TwitterApiCall* call = new TwitterMentions(
-        "/home/rdelfin/Documents/twitter_config.json", -1, lastTweetId, -1,
+        "/home/users/fri/Documents/twitter_config.json", -1, lastTweetId, -1,
         false, true, false);
     
     std::string result = handler.makeRequest(call);
