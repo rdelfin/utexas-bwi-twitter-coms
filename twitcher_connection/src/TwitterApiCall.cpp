@@ -17,18 +17,19 @@
 
 #include "twitcher_connection/TwitterApiCall.h"
 
-#include <json/json.h>
-#include <json/value.h>
+#include "json/json.hpp"
 
 #include <fstream>
 
+using json = nlohmann::json;
+
 TwitterApiCall::TwitterApiCall(std::string configFile)
 {
-    Json::Value root;   // 'root' will contain the root value after parsing.
+    json root;   // 'root' will contain the root value after parsing.
     std::ifstream config_doc(configFile.c_str());
-    Json::Reader reader;
-    reader.parse(config_doc, root);
+    
+    config_doc >> root;
     
     // This is the best notation I have ever seen
-    url = root["twitter_api_url"].asString();
+    url = root["twitter_api_url"];
 }

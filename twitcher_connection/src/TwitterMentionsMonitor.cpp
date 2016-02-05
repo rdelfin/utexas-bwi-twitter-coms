@@ -15,7 +15,7 @@
  * 
  */
 
-#include <json/json.h>
+#include "json/json.hpp"
 #include <boost/date_time.hpp>
 #include <boost/date_time/posix_time/posix_time_io.hpp>
 #include <boost/thread/pthread/mutex.hpp>
@@ -24,6 +24,8 @@
 #include "twitcher_connection/TwitterMentions.h"
 
 #include "twitcher_connection/Tweet.h"
+
+using json = nlohmann::json;
 
 TwitterMentionsMonitor::TwitterMentionsMonitor(ros::NodeHandle& nh, 
                                                TwitterRequestHandler handler) : 
@@ -56,26 +58,24 @@ void TwitterMentionsMonitor::receiveNewMentions()
     
     if(result == "" || result == "[]") return;
     
-    Json::Value root;
-    Json::Reader reader;
-    reader.parse(result, root);
+    json root = json::parse(result);
     
     // Set the last tweet ID to the 0th index in the array (always the latest)
-    lastTweetId = root[0]["id"].asInt64();
+    lastTweetId = root[0]["id"];
     
     // Iterate in reverse temporal order
     for(int i = root.size() - 1; i >= 0; i--) {
         ROS_INFO("Processing tweet. Information:");
-        ROS_INFO_STREAM("\tMessage: " << root[(int)i]["text"].asString());
-        ROS_INFO_STREAM("\tSent Time (ISO): " << ToIsoString(root[(int)i]["created_at"].asString()));
+        ROS_INFO_STREAM("\tMessage: " << root[(int)i]["text"]);
+        ROS_INFO_STREAM("\tSent Time (ISO): " << ToIsoString(root[(int)i]["created_at"]));
         
-        if(IsDateAfterStart(root[(int)i]["created_at"].asString())) {
+        if(IsDateAfterStart(root[(int)i]["created_at"])) {
             ROS_INFO("Accepted! Forwarding...");
             twitcher_connection::Tweet tweet;
-            tweet.id = root[(int)i]["id"].asInt64();
-            tweet.message = root[(int)i]["text"].asString();
-            tweet.sender = root[(int)i]["user"]["id_str"].asString();
-            tweet.sentTime = ToIsoString(root[(int)i]["created_at"].asString());
+            tweet.id = root[(int)i]["id"];
+            tweet.message = root[(int)i]["text"];
+            tweet.sender = root[(int)i]["user"]["id_str"];
+            tweet.sentTime = ToIsoString(root[(int)i]["created_at"]);
             
             mention_publisher.publish<twitcher_connection::Tweet>(tweet);
             

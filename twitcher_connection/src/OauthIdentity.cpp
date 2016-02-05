@@ -19,8 +19,7 @@
 #include "twitcher_connection/base64.h"
 #include "twitcher_connection/HMAC_SHA1.h"
 
-#include <json/json.h>
-#include <json/value.h>
+#include "json/json.hpp"
 
 #include <curlpp/Easy.hpp>
 #include <curlpp/cURLpp.hpp>
@@ -33,6 +32,8 @@
 #include <cstring>
 
 #include <boost/config/posix_features.hpp>
+
+using json = nlohmann::json;
 
 OauthIdentity::OauthIdentity(std::string consumerKey, std::string consumerSecret,
                   std::string accessToken, std::string accessTokenSecret, 
@@ -55,17 +56,17 @@ OauthIdentity::OauthIdentity(std::string configFile, std::string apiUrl,
 {
     srand(time(NULL));
     
-    Json::Value root;   // 'root' will contain the root value after parsing.
+    json root;   // 'root' will contain the root value after parsing.
     std::ifstream config_doc(configFile.c_str());
-    Json::Reader reader;
-    reader.parse(config_doc, root);
+    
+    config_doc >> root;
     
     // This is the best notation I have ever seen
-    consumerKey = root["twitter_oauth"]["oauth_consumer_key"].asString();
-    consumerSecret = root["twitter_oauth"]["oauth_costumer_secret"].asString();
-    accessToken = root["twitter_oauth"]["oauth_token"].asString();
-    accessTokenSecret = root["twitter_oauth"]["oauth_token_secret"].asString();
-    version = root["twitter_oauth"]["oauth_version"].asString();
+    consumerKey = root["twitter_oauth"]["oauth_consumer_key"];
+    consumerSecret = root["twitter_oauth"]["oauth_costumer_secret"];
+    accessToken = root["twitter_oauth"]["oauth_token"];
+    accessTokenSecret = root["twitter_oauth"]["oauth_token_secret"];
+    version = root["twitter_oauth"]["oauth_version"];
 }
 
 const std::string& OauthIdentity::getAuthHeader()

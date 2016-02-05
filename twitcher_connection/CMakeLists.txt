@@ -19,9 +19,6 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib_msgs
 )
 
-
-
-find_package(Jsoncpp REQUIRED)
 find_package(CURL REQUIRED)
 
 
@@ -129,7 +126,6 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${CURL_INCLUDE_DIR}
-  ${Jsoncpp_INCLUDE_DIR}
 )
 
 ## Declare a C++ library
@@ -163,7 +159,6 @@ add_dependencies(twitcher_connection_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${
 target_link_libraries(twitcher_connection_node
   ${catkin_LIBRARIES}
   ${CURL_LIBRARIES}
-  ${Jsoncpp_LIBRARY}
   curlpp
 )
 
