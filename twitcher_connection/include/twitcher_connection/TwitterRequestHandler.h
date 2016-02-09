@@ -18,7 +18,7 @@
 #ifndef TWITTERREQUESTHANDLER_H
 #define TWITTERREQUESTHANDLER_H
 
-#include <json/json.h>
+#include <json/json.hpp>
 
 #include <string>
 #include <map>
