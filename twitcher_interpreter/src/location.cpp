@@ -17,6 +17,7 @@
 
 #include <twitcher_interpreter/location.h>
 #include <json/json.hpp>
+#include <string>
 
 using json = nlohmann::json;
 
@@ -42,13 +43,17 @@ Location::Location(std::string json_str)
     }
 }
 
-bool Location::mentions(std::string tweet)
+bool Location::isMentioned(std::string tweet)
 {
-  for(auto it = common_name::begin(); it != common_name::end(); ++it)
-    if(tweet.find(*it) != "")
+  for(auto it = common_name.begin(); it != common_name.end(); ++it)
+    if(tweet.find(*it) != std::string::npos)
 	return true;
   
   return false;
+}
+
+std::string Location::get_asp_name() {
+    return this->asp_name;
 }
 
 Location::~Location()

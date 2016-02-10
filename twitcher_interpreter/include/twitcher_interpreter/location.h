@@ -34,7 +34,9 @@ public:
   
   explicit Location(std::string json);
   
-  bool mentions(std::string tweet);
+  bool isMentioned(std::string tweet);
+  
+  std::string get_asp_name();
   
   ~Location();
 };
