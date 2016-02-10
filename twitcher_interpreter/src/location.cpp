@@ -35,11 +35,10 @@ Location::Location(const std::string &name, const std::vector<std::string> &comm
 Location::Location(std::string json_str)
 {
     json root = json::parse(json_str);
-    
-    asp_name = root["asp_name"];
+    asp_name = root["asp_name"].get<std::string>();
     
     for(int i = 0; i < root["common_names"].size(); i++) {
-	common_name.push_back(root["common_names"][i]);
+	common_name.push_back(root["common_names"][i].get<std::string>());
     }
 }
 
