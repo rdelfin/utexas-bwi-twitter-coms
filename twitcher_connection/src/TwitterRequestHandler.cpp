@@ -33,7 +33,7 @@
 using json = nlohmann::json;
 
 TwitterRequestHandler::TwitterRequestHandler()
-    : configFile("/home/rdelfin/Documents/twitter_config.json")
+    : configFile("/home/users/fri/Documents/twitter_config.json")
 {
     json root;   // 'root' will contain the root value after parsing.
     std::ifstream config_doc(configFile.c_str());

@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
 }
 
 void initLocations() {
-    std::ifstream file_stream("/home/rdelfin/Documents/rooms.json");
+    std::ifstream file_stream("/home/users/fri/Documents/rooms.json");
     json root;
     
     file_stream >> root;

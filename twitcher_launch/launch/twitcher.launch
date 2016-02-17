@@ -1,8 +1,6 @@
 <launch>
-    <group ns="master_twitcher">
-        <node pkg="twitcher_manager" name="manager" type="twitcher_manager_node" />
-        <node pkg="twitcher_connection" name="connection" type="twitcher_connection_node" />
-        <node pkg="twitcher_interpreter" name="interpreter" type="twitcher_interpreter_node" />
-        <node pkg="twitcher_actions" name="actions" type="twitcher_actions_node" />
-    </group>
+    <node pkg="twitcher_manager" name="manager" type="twitcher_manager_node" />
+    <node pkg="twitcher_connection" name="connection" type="twitcher_connection_node" />
+    <node pkg="twitcher_interpreter" name="interpreter" type="twitcher_interpreter_node" />
+    <node pkg="twitcher_actions" name="actions" type="twitcher_actions_node" />
 </launch>

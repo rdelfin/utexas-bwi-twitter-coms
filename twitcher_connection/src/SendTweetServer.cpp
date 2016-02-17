@@ -27,7 +27,7 @@ void SendTweetServer::executeCB(const twitcher_connection::SendTweetGoalConstPtr
     feedback_.progress+=10;
 
     TwitterApiCall* api = 
-        new TwitterUpdateStatus("/home/rdelfin/Documents/twitter_config.json", 
+        new TwitterUpdateStatus("/home/users/fri/Documents/twitter_config.json", 
                                     goal->message,
                                     -1, false, false);
 
