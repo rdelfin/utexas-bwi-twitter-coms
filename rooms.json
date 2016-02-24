@@ -1,6 +1,7 @@
 [
     {
         "asp_name": "l3_422",
+        "doors" : [ "d3_422" ],
         "common_names": [
             "GDC 3.422",
             "3.422",
@@ -9,7 +10,8 @@
     },
     
     {
-        "asp_name": "l3_422",
+        "asp_name": "l3_420",
+        "doors": [ "d3_420" ],
         "common_names": [
             "GDC 3.420",
             "3.420",
@@ -19,6 +21,7 @@
     
     {
         "asp_name": "l3_408",
+        "doors": [ ],
         "common_names": [
             "GDC 3.408",
             "3.408",
@@ -28,6 +31,7 @@
     
     {
         "asp_name": "l3_424",
+        "doors": [ ],
         "common_names": [
             "GDC 3.424",
             "3.424",
@@ -37,6 +41,7 @@
     
     {
         "asp_name": "l3_406",
+        "doors": [ ],
         "common_names": [
             "GDC 3.406",
             "3.406",
@@ -46,6 +51,7 @@
     
     {
         "asp_name": "l3_400",
+        "doors": [ ],
         "common_names": [
             "GDC 3.400",
             "3.400",
@@ -55,6 +61,7 @@
     
     {
         "asp_name": "l3_402",
+        "doors": [ "d3_402" ],
         "common_names": [
             "GDC 3.402",
             "3.402",
@@ -64,6 +71,7 @@
     
     {
         "asp_name": "l3_516",
+        "doors": [ "d3_516" ],
         "common_names": [
             "GDC 3.516",
             "3.516",
@@ -73,6 +81,7 @@
     
     {
         "asp_name": "l3_514",
+        "doors": [ ],
         "common_names": [
             "GDC 3.514",
             "3.514",
@@ -82,6 +91,7 @@
     
     {
         "asp_name": "l3_418",
+        "doors": [ "d3_418" ],
         "common_names": [
             "GDC 3.418",
             "3.418",
@@ -91,6 +101,7 @@
     
     {
         "asp_name": "l3_512",
+        "doors": [ "d3_512" ],
         "common_names": [
             "GDC 3.512",
             "3.512",
@@ -100,6 +111,7 @@
     
     {
         "asp_name": "l3_510",
+        "doors": [ "d3_510" ],
         "common_names": [
             "GDC 3.510",
             "3.510",
@@ -109,6 +121,7 @@
     
     {
         "asp_name": "l3_426",
+        "doors": [ ],
         "common_names": [
             "GDC 3.426",
             "3.426",
@@ -118,6 +131,7 @@
     
     {
         "asp_name": "l3_518",
+        "doors": [ ],
         "common_names": [
             "GDC 3.518",
             "3.518",
@@ -127,6 +141,7 @@
     
     {
         "asp_name": "l3_428",
+        "doors": [ ],
         "common_names": [
             "GDC 3.428",
             "3.428",
@@ -135,7 +150,18 @@
     },
     
     {
+        "asp_name": "l3_404",
+        "doors": [ "d3_404" ],
+        "common_names": [
+            "GDC 3.404",
+            "3.404",
+            "404"
+        ]
+    },
+    
+    {
         "asp_name": "l3_430",
+        "doors": [ "d3_430" ],
         "common_names": [
             "GDC 3.430",
             "3.430",
@@ -145,6 +171,7 @@
     
     {
         "asp_name": "l3_402",
+        "doors": [ "d3_402" ],
         "common_names": [
             "GDC 3.402",
             "3.402",
@@ -154,6 +181,7 @@
     
     {
         "asp_name": "l3_432",
+        "doors": [ "d3_432" ],
         "common_names": [
             "GDC 3.432",
             "3.432",
@@ -163,6 +191,7 @@
     
     {
         "asp_name": "l3_434",
+        "doors": [ ],
         "common_names": [
             "GDC 3.434",
             "3.434",
@@ -172,6 +201,7 @@
     
     {
         "asp_name": "l3_436",
+        "doors": [ "d3_436" ],
         "common_names": [
             "GDC 3.436",
             "3.436",
@@ -181,6 +211,7 @@
     
     {
         "asp_name": "l3_412",
+        "doors": [ ],
         "common_names": [
             "GDC 3.412",
             "3.412",
@@ -190,6 +221,7 @@
     
     {
         "asp_name": "l3_410",
+        "doors": [ ],
         "common_names": [
             "GDC 3.410",
             "3.410",
@@ -199,72 +231,17 @@
     
     {
         "asp_name": "l3_416",
+        "doors": [ "d3_416" ],
         "common_names": [
             "GDC 3.416",
             "3.416",
             "416"
         ]
     },
-    
-    {
-        "asp_name": "l3_414",
-        "common_names": [
-            "GDC 3.414",
-            "3.414",
-            "414",
-            "middle room",
-            "middle lab",
-            "center lab"
-        ]
-    },
-    
-    {
-        "asp_name": "l3_504",
-        "common_names": [
-            "GDC 3.504",
-            "3.504",
-            "504"
-        ]
-    },
-    
-    {
-        "asp_name": "l3_506",
-        "common_names": [
-            "GDC 3.506",
-            "3.506",
-            "506"
-        ]
-    },
-    
-    {
-        "asp_name": "l3_500",
-        "common_names": [
-            "GDC 3.500",
-            "3.500",
-            "500"
-        ]
-    },
-    
-    {
-        "asp_name": "l3_508",
-        "common_names": [
-            "GDC 3.508",
-            "3.508",
-            "508"
-        ]
-    },
-    
-    {
-        "asp_name": "l3_520",
-        "common_names": [
-            "GDC 3.520",
-            "3.520",
-            "520"
-        ]
-    },
-    
+
     {
         "asp_name": "l3_414a",
+        "doors": [ "d3_414a1", "d3_414a2", "d3_414a3" ],
         "common_names": [
             "GDC 3.414a",
             "GDC 3.414 a",
@@ -279,6 +256,7 @@
     
     {
         "asp_name": "l3_414b",
+        "doors": [ "d3_414b1", "d3_414b2", "d3_414b3" ],
         "common_names": [
             "GDC 3.414b",
             "GDC 3.414 b",
@@ -290,5 +268,130 @@
             "bwi lab",
             "robotics lab"
         ]
-    }
+    },
+
+
+    
+    {
+        "asp_name": "l3_414",
+        "doors": [ "d3_414b3", "d3_414a3" ],
+        "common_names": [
+            "GDC 3.414",
+            "3.414",
+            "414",
+            "middle room",
+            "middle lab",
+            "center lab"
+        ]
+    },
+    
+    {
+        "asp_name": "l3_502",
+        "doors": [ "d3_502" ],
+        "common_names": [
+            "GDC 3.502",
+            "3.502",
+            "502"
+        ]
+    },
+    
+    {
+        "asp_name": "l3_504",
+        "doors": [ ],
+        "common_names": [
+            "GDC 3.504",
+            "3.504",
+            "504"
+        ]
+    },
+    
+    {
+        "asp_name": "l3_506",
+        "doors": [ ],
+        "common_names": [
+            "GDC 3.506",
+            "3.506",
+            "506"
+        ]
+    },
+    
+    {
+        "asp_name": "l3_500",
+        "doors": [ ],
+        "common_names": [
+            "GDC 3.500",
+            "3.500",
+            "500"
+        ]
+    },
+    
+    {
+        "asp_name": "l3_508",
+        "doors": [ "d3_508" ],
+        "common_names": [
+            "GDC 3.508",
+            "3.508",
+            "508"
+        ]
+    },
+    
+    {
+        "asp_name": "l3_520",
+        "doors": [ ],
+        "common_names": [
+            "GDC 3.520",
+            "3.520",
+            "520"
+        ]
+    },
+    
+    {
+        "asp_name": "l3_200",
+        "doors" : [ ],
+        "common_names": [
+            "GDC 3.200",
+            "3.200",
+            "200"
+        ]
+    },
+    
+    {
+        "asp_name": "l3_300",
+        "doors" : [ ],
+        "common_names": [
+            "GDC 3.300",
+            "3.300",
+            "300"
+        ]
+    },
+    
+    {
+        "asp_name": "l3_302",
+        "doors" : [ ],
+        "common_names": [
+            "GDC 3.302",
+            "3.302",
+            "302"
+        ]
+    },
+    
+    {
+        "asp_name": "l3_303",
+        "doors" : [ ],
+        "common_names": [
+            "GDC 3.303",
+            "3.303",
+            "303"
+        ]
+    },
+    
+    {
+        "asp_name": "l3_250",
+        "doors" : [ ],
+        "common_names": [
+            "GDC 250",
+            "3.250",
+            "250"
+        ]
+    },
 ]
