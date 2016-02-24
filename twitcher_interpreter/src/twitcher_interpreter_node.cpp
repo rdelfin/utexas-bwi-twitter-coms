@@ -47,9 +47,6 @@ int main(int argc, char* argv[])
 {
     initLocations();
     
-    goToTweetRegex = boost::regex("(?<=Go to room )l3_([\\d]{3}|414[ab])",
-                                  boost::regex::icase);
-    
     ros::init(argc, argv, "twitcher_interpreter_node");
     ros::NodeHandle node;
     
@@ -59,7 +56,7 @@ int main(int argc, char* argv[])
     
     ROS_INFO_STREAM("Twitcher Interpreter Node up, listening on /GoToLocation");
     
-    ros::Subscriber subscriber = node.subscribe("dialog", 1000, messageReceiver);
+    ros::Subscriber subscriber = node.subscribe("dialog", 100, messageReceiver);
     
     ros::spin();
     
