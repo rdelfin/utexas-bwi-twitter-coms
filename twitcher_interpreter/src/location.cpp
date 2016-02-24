@@ -40,6 +40,10 @@ Location::Location(std::string json_str)
     for(int i = 0; i < root["common_names"].size(); i++) {
 	common_name.push_back(root["common_names"][i].get<std::string>());
     }
+    
+    for(int i = 0; i < root["doors"].size(); i++) {
+        doors.push_back(root["doors"][i].get<std::string>());
+    }
 }
 
 bool Location::isMentioned(std::string tweet)
@@ -51,7 +55,19 @@ bool Location::isMentioned(std::string tweet)
   return false;
 }
 
-std::string Location::get_asp_name() {
+// True if the room has a door. False otherwise
+bool Location::hasDoor()
+{
+    return doors.size() != 0;
+}
+
+// Return the empty string if there are no doors. Otherwise, return the first door in the list
+std::string Location::getFirstDoor()
+{
+    return (doors.size() == 0 ? "" : doors[0]);
+}
+
+std::string Location::getAspName() {
     return this->asp_name;
 }
 

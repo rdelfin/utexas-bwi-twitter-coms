@@ -27,7 +27,8 @@ class Location
 {
 private:
   std::string asp_name;
-  std::vector<std::string> common_name;
+  std::vector<std::string> common_name;  
+  std::vector<std::string> doors;
 public:
   Location();
   Location(const std::string &name, const std::vector<std::string> &common_name);
@@ -35,8 +36,11 @@ public:
   explicit Location(std::string json);
   
   bool isMentioned(std::string tweet);
+  bool hasDoor();
+  std::string getFirstDoor();
   
-  std::string get_asp_name();
+  std::string getAspName();
+
   
   ~Location();
 };

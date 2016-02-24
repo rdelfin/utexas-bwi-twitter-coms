@@ -26,16 +26,15 @@
 #include "json/json.hpp"
 
 #include <twitcher_actions/GoToLocationAction.h>
+#include <twitcher_actions/FaceDoorAction.h>
 
 #include "twitcher_interpreter/dialog_message.h"
 #include "twitcher_interpreter/location.h"
 
-#include <std_msgs/Float32.h>
-
 using json = nlohmann::json;
 
-boost::regex goToTweetRegex;
-actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>* client;
+actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>* goToLocationClient;
+actionlib::SimpleActionClient<twitcher_actions::FaceDoorAction>* faceDoorClient;
 
 std::vector<Location> loc;
 
@@ -50,9 +49,10 @@ int main(int argc, char* argv[])
     ros::init(argc, argv, "twitcher_interpreter_node");
     ros::NodeHandle node;
     
-    client = new actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>(node, "GoToLocation", true);
+    goToLocationClient = new actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>(node, "GoToLocation", true);
+    faceDoorClient = new actionlib::SimpleActionClient<twitcher_actions::FaceDoorAction>(node, "FaceDoor", true);
     
-    client->waitForServer();
+    goToLocationClient->waitForServer();
     
     ROS_INFO_STREAM("Twitcher Interpreter Node up, listening on /GoToLocation");
     
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
     
     ros::spin();
     
-    delete client;
+    delete goToLocationClient;
 }
 
 void initLocations() {
@@ -83,9 +83,18 @@ void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr& msg)
     
     for(auto it = loc.begin(); it != loc.end(); ++it) {
         if(it->isMentioned(msg->message)) {
-            twitcher_actions::GoToLocationGoal goal;
-            goal.location_name = it->get_asp_name();
-            client->sendGoal(goal);
+            
+            if(it->hasDoor()) {
+                twitcher_actions::FaceDoorGoal goal;
+                goal.door_name = it->getFirstDoor();
+                faceDoorClient->sendGoal(goal);
+            }
+            else {
+                twitcher_actions::GoToLocationGoal goal;
+                goal.location_name = it->getAspName();
+                goToLocationClient->sendGoal(goal);
+            }
+            
             break;
         }
     }
