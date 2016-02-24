@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Ricardo Delfin Garcia <ricardo.delfin.garcia@gmail.com>
+ * Copyright 2016 Ricardo Delfin Garcia <ricardo.delfin.garcia@gmail.com>
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,23 @@
  * 
  */
 
+#pragma once
+
 #include <ros/ros.h>
-#include <twitcher_actions/GoToLocationAction.h>
 
-#include "twitcher_actions/GoToLocation.h"
-#include "twitcher_actions/facedoor.h"
 #include "twitcher_actions/RobotAction.h"
+#include "twitcher_actions/FaceDoorAction.h"
 
-int main (int argc, char* argv[])
+class FaceDoor : public RobotAction<twitcher_actions::FaceDoorAction,
+                                        twitcher_actions::FaceDoorGoal,
+                                        twitcher_actions::FaceDoorFeedback,
+                                        twitcher_actions::FaceDoorResult>
 {
-    ros::init(argc, argv, "twitcher_actions");
-    ros::NodeHandle n;
-    
-    GoToLocation goToLocation(n);
-    FaceDoor faceDoor(n);
-    
-    ros::spin();
-}
+public:
+    FaceDoor();
+    FaceDoor(ros::NodeHandle node);
+    ~FaceDoor();
+protected:
+    virtual void executeAction(const twitcher_actions::FaceDoorGoal::ConstPtr& goal);
+};
+
