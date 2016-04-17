@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   actionlib
   actionlib_msgs
+  dynamic_reconfigure
 )
 
 find_package(CURL REQUIRED)
@@ -94,10 +95,10 @@ add_message_files(
 ##     and list every .cfg file to be processed
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
-# )
+generate_dynamic_reconfigure_options(
+  cfg/config.cfg
+  cfg/oauth.cfg
+)
 
 ###################################
 ## catkin specific configuration ##
