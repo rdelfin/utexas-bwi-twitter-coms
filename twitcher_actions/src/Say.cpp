@@ -30,9 +30,10 @@ Say::Say(ros::NodeHandle node)
     : RobotAction<twitcher_actions::SayAction,
                   twitcher_actions::SayGoal,
                   twitcher_actions::SayFeedback,
-                  twitcher_actions::SayResult>("say_twitter", node)
+                  twitcher_actions::SayResult>("SayTwitter", node)
 {
     soundplay_publisher = node.advertise<sound_play::SoundRequest>("robotsound", 100);
+    ROS_INFO("/SayTwitter action server up");
 }
 
 void Say::executeAction(const twitcher_actions::SayGoal::ConstPtr& goal)

@@ -20,7 +20,7 @@
 
 #include "twitcher_actions/GoToLocation.h"
 #include "twitcher_actions/facedoor.h"
-#include "twitcher_actions/RobotAction.h"
+#include "twitcher_actions/Say.h"
 
 int main (int argc, char* argv[])
 {
@@ -29,6 +29,7 @@ int main (int argc, char* argv[])
     
     GoToLocation goToLocation(n);
     FaceDoor faceDoor(n);
+    Say say(n);
     
     ros::spin();
 }
