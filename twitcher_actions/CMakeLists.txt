@@ -77,6 +77,7 @@ add_action_files(
   FILES
   GoToLocation.action
   FaceDoor.action
+  Say.action
 )
 
 ## Generate added messages and services with any dependencies listed here
