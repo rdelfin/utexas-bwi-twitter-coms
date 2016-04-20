@@ -49,8 +49,9 @@ void gotoDoorAndSay(Location* location, std::string spoken_text);
 
 int main(int argc, char* argv[])
 {
-    goToTweetRegex = std::regex("(Go to room )([.\\w\\s]+) and say (.+)",
-                                std::regex_constants::grep | std::regex_constants::icase);
+    // "Go to (.\\w\\s)+ and say (\\w\\s)+"
+    goToTweetRegex = std::regex("Go to ([.\\w\\s]+) and say ([\\w\\s]+)",
+                                std::regex_constants::ECMAScript | std::regex_constants::icase);
     
     initLocations();
     
@@ -93,29 +94,20 @@ void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr& msg)
     
     // The string was found. Execute action
     if(it != std::sregex_iterator()) {
+        ROS_INFO("Tweet matched!");
         std::smatch match = *it;
-        std::string location_name = match.str(2);
-        std::string spoken_text = match.str(3);
+        std::string location_name = match.str(1);
+        std::string spoken_text = match.str(2);
         Location *location;
         if(locExists(location_name, &location)) {
+	    ROS_INFO_STREAM("Location matched to: " << location->getAspName() << " with message \"" << spoken_text << "\"");
             gotoDoorAndSay(location, spoken_text);
         }
     }
-    
-    /*
-    if(it->hasDoor()) {
-        twitcher_actions::FaceDoorGoal goal;
-        goal.door_name = it->getFirstDoor();
-        faceDoorClient->sendGoal(goal);
+    else
+    {
+        ROS_INFO("Tweet did not match!");
     }
-    else {
-        twitcher_actions::GoToLocationGoal goal;
-        goal.location_name = it->getAspName();
-        goToLocationClient->sendGoal(goal);
-    }
-    
-    break;
-     */
 }
 
 bool locExists(std::string msg, Location** result) {
@@ -134,8 +126,7 @@ void gotoDoorAndSay(Location* location, std::string spoken_text) {
         twitcher_actions::FaceDoorGoal face_goal;
         face_goal.door_name = location->getFirstDoor();
         faceDoorClient->sendGoal(face_goal);
-        faceDoorClient->waitForResult();
-        
+        faceDoorClient->waitForResult(); 
     }
     else {
         twitcher_actions::GoToLocationGoal goto_goal;
