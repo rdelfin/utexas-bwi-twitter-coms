@@ -38,6 +38,7 @@ Say::Say(ros::NodeHandle node)
 
 void Say::executeAction(const twitcher_actions::SayGoal::ConstPtr& goal)
 {
+    twitcher_actions::SayResult result;
     std::string spoken_text = goal->message;
     
     sound_play::SoundRequest msg;
@@ -45,6 +46,9 @@ void Say::executeAction(const twitcher_actions::SayGoal::ConstPtr& goal)
     msg.arg = spoken_text;
     
     soundplay_publisher.publish(msg);
+
+    result.success = true;
+    server->setSucceeded(result);
 }
 
 

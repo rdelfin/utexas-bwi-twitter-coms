@@ -60,7 +60,8 @@ int main(int argc, char* argv[])
     
     goToLocationClient = new actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>(node, "GoToLocation", true);
     faceDoorClient = new actionlib::SimpleActionClient<twitcher_actions::FaceDoorAction>(node, "FaceDoor", true);
-    
+    sayClient = new actionlib::SimpleActionClient<twitcher_actions::SayAction>(node, "SayTwitter", true)
+
     goToLocationClient->waitForServer();
     
     ROS_INFO_STREAM("Twitcher Interpreter Node up, listening on /GoToLocation");
@@ -123,20 +124,29 @@ bool locExists(std::string msg, Location** result) {
 
 void gotoDoorAndSay(Location* location, std::string spoken_text) {
     if(location->hasDoor()) {
+        ROS_INFO("Sending face door! Setup...");
         twitcher_actions::FaceDoorGoal face_goal;
         face_goal.door_name = location->getFirstDoor();
         faceDoorClient->sendGoal(face_goal);
-        faceDoorClient->waitForResult(); 
+        ROS_INFO("Sent face door goal! Waiting...");
+        faceDoorClient->waitForResult();
+        ROS_INFO("Finished face door action!");
     }
     else {
+        ROS_INFO("Sending go to goal! Setup...");
         twitcher_actions::GoToLocationGoal goto_goal;
         goto_goal.location_name = location->getAspName();
         goToLocationClient->sendGoal(goto_goal);
+        ROS_INFO("Sent go to goal! Waiting...");
         goToLocationClient->waitForResult();
+        ROS_INFO("Finished go to action!");
     }
     
+    ROS_INFO("Setting up say...");
     twitcher_actions::SayGoal say_goal;
     say_goal.message = spoken_text;
     sayClient->sendGoal(say_goal);
+    ROS_INFO("Say goal sent. Waiting for completion...");
     sayClient->waitForResult();
+    ROS_INFO("Say finished!");
 }
