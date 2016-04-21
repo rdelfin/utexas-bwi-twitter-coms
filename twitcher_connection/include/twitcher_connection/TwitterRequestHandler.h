@@ -44,7 +44,6 @@ public:
     std::string makeRequest(TwitterApiCall*);
     
 private:
-    std::string configFile;
     std::string authorizationHeader;
     std::string apiUrl;
 };

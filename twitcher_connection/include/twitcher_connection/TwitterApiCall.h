@@ -39,7 +39,7 @@ enum class HttpMethod {
 
 class TwitterApiCall {
 public:
-    TwitterApiCall(std::string configFile);
+    TwitterApiCall();
     
     virtual const curlpp::Easy& request() = 0;
     

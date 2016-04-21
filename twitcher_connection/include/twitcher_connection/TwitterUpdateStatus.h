@@ -25,9 +25,8 @@
 class TwitterUpdateStatus : public TwitterApiCall
 {
 public:
-    TwitterUpdateStatus(std::string configFile, std::string status,
-                        int in_reply_to_status_id, bool possibly_sensitive,
-                        bool trim_user);
+    TwitterUpdateStatus(std::string status, int in_reply_to_status_id, 
+                        bool possibly_sensitive, bool trim_user);
     
     virtual const curlpp::Easy& request();
     

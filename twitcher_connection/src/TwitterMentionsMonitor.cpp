@@ -50,9 +50,7 @@ void TwitterMentionsMonitor::receiveNewMentions()
     ROS_INFO_STREAM("Receiving new mentions... Start (UTC): "
                     << boost::posix_time::to_iso_string(start));
     
-    TwitterApiCall* call = new TwitterMentions(
-        "/home/users/fri/Documents/twitter_config.json", -1, lastTweetId, -1,
-        false, false, false);
+    TwitterApiCall* call = new TwitterMentions(-1, lastTweetId, -1, false, false, false);
     
     std::string result = handler.makeRequest(call);
     

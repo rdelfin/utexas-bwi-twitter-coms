@@ -31,7 +31,7 @@ public:
                   std::map<std::string, std::string> queryVals,
                   std::string httpMethod);
     
-    OauthIdentity(std::string configFile, std::string apiUrl,
+    OauthIdentity(std::string apiUrl,
                   std::map<std::string, std::string> queryVals,
                   std::string httpMethod);
     

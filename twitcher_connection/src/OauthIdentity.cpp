@@ -18,6 +18,7 @@
 #include "twitcher_connection/OauthIdentity.h"
 #include "twitcher_connection/base64.h"
 #include "twitcher_connection/HMAC_SHA1.h"
+#include <twitcher_connection/config.h>
 
 #include "json/json.hpp"
 
@@ -35,6 +36,8 @@
 
 using json = nlohmann::json;
 
+Config* Config::_instance = nullptr;
+
 OauthIdentity::OauthIdentity(std::string consumerKey, std::string consumerSecret,
                   std::string accessToken, std::string accessTokenSecret, 
                   std::string apiUrl, std::string version,
@@ -48,25 +51,20 @@ OauthIdentity::OauthIdentity(std::string consumerKey, std::string consumerSecret
     srand(time(NULL));
 }
 
-OauthIdentity::OauthIdentity(std::string configFile, std::string apiUrl, 
+OauthIdentity::OauthIdentity(std::string apiUrl, 
                              std::map<std::string, std::string> queryVals,
                              std::string httpMethod)
-                            : apiUrl(apiUrl), queryVals(queryVals),
-                              httpMethod(httpMethod)
+                            : OauthIdentity(
+                                            Config::getInstance()->oauthConsumerKey(),
+                                            Config::getInstance()->oauthConsumerSecret(),
+                                            Config::getInstance()->oauthToken(),
+                                            Config::getInstance()->oauthTokenSecret(),
+                                            Config::getInstance()->twitterApi(),
+                                            Config::getInstance()->oauthVersion(),
+                                            queryVals, httpMethod
+                                           )
 {
     srand(time(NULL));
-    
-    json root;   // 'root' will contain the root value after parsing.
-    std::ifstream config_doc(configFile.c_str());
-    
-    config_doc >> root;
-    
-    // This is the best notation I have ever seen
-    consumerKey = root["twitter_oauth"]["oauth_consumer_key"];
-    consumerSecret = root["twitter_oauth"]["oauth_costumer_secret"];
-    accessToken = root["twitter_oauth"]["oauth_token"];
-    accessTokenSecret = root["twitter_oauth"]["oauth_token_secret"];
-    version = root["twitter_oauth"]["oauth_version"];
 }
 
 const std::string& OauthIdentity::getAuthHeader()

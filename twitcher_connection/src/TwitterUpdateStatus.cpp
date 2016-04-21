@@ -19,13 +19,12 @@
 
 #include <sstream>
 
-TwitterUpdateStatus::TwitterUpdateStatus(std::string configFile,
-                                         std::string status,
+TwitterUpdateStatus::TwitterUpdateStatus(std::string status,
                                          int in_reply_to_status_id,
                                          bool possibly_sensitive,
                                          bool trim_user)
 
-    : TwitterApiCall(configFile), status(status),
+    : TwitterApiCall(), status(status),
       in_reply_to_status_id(in_reply_to_status_id),
         possibly_sensitive(possibly_sensitive), trim_user(trim_user)
 {
@@ -45,7 +44,7 @@ TwitterUpdateStatus::TwitterUpdateStatus(std::string configFile,
     
     callUrl << url << path;
     
-    identity = OauthIdentity(configFile, callUrl.str(), queryVals, "POST");
+    identity = OauthIdentity(callUrl.str(), queryVals, "POST");
     
     req = nullptr;
     

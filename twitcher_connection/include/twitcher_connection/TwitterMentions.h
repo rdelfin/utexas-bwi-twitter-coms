@@ -27,7 +27,7 @@
 class TwitterMentions : public TwitterApiCall
 {
 public:
-    TwitterMentions(std::string configFile, int count, long since_id, long max_id,
+    TwitterMentions(int count, long since_id, long max_id,
                     bool trim_user, bool contributor_details,
                     bool include_entities);
     

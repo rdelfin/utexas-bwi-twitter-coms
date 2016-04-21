@@ -17,6 +17,7 @@
 
 #include "twitcher_connection/TwitterRequestHandler.h"
 #include "twitcher_connection/OauthIdentity.h"
+#include <twitcher_connection/config.h>
 
 #include "json/json.hpp"
 
@@ -33,19 +34,13 @@
 using json = nlohmann::json;
 
 TwitterRequestHandler::TwitterRequestHandler()
-    : configFile("/home/users/fri/Documents/twitter_config.json")
+    : apiUrl(Config::getInstance()->twitterApi())
 {
-    json root;   // 'root' will contain the root value after parsing.
-    std::ifstream config_doc(configFile.c_str());
     
-    config_doc >> root;
-    
-    apiUrl = root["twitter_api_url"];
 }
 
 TwitterRequestHandler::TwitterRequestHandler(const TwitterRequestHandler& other)
-    : authorizationHeader(other.authorizationHeader), apiUrl(other.apiUrl),
-      configFile(other.configFile)
+    : authorizationHeader(other.authorizationHeader), apiUrl(other.apiUrl)
 {
     
 }

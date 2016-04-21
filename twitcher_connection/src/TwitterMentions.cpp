@@ -27,11 +27,11 @@
 
 #include <sstream>
 
-TwitterMentions::TwitterMentions(std::string configFile, int count,
-                                 long since_id, long max_id, bool trim_user,
+TwitterMentions::TwitterMentions(int count, long since_id, 
+                                 long max_id, bool trim_user,
                                  bool contributor_details,
                                  bool include_entities)
-    : TwitterApiCall(configFile), count(count), since_id(since_id),
+    : TwitterApiCall(), count(count), since_id(since_id),
       max_id(max_id), trim_user(trim_user),
       contributor_details(contributor_details),
       include_entities(include_entities)
@@ -56,7 +56,7 @@ TwitterMentions::TwitterMentions(std::string configFile, int count,
     
     callUrl << url << path;
     
-    identity = OauthIdentity(configFile, callUrl.str(), queryVals, "GET");
+    identity = OauthIdentity(callUrl.str(), queryVals, "GET");
     
     req = nullptr;
     
