@@ -51,6 +51,8 @@ GoToLocation::~GoToLocation()
 
 void GoToLocation::executeAction(const twitcher_actions::GoToLocationGoal::ConstPtr& goal)
 {
+    twitcher_actions::GoToLocationResult result;
+    
     // Wait for action executor server to start up
     Client client("action_executor/execute_plan", true);
     client.waitForServer();
@@ -87,15 +89,24 @@ void GoToLocation::executeAction(const twitcher_actions::GoToLocationGoal::Const
         wait_rate.sleep();
     }
     if (client.getState() == actionlib::SimpleClientGoalState::ABORTED) {
+        result.success = false;
+        server->setPreempted(result);
         ROS_INFO("Aborted");
     }
     else if (client.getState() == actionlib::SimpleClientGoalState::PREEMPTED) {
+        result.success = false;
+        server->setPreempted(result);
         ROS_INFO("Preempted");
     }
     
     else if (client.getState() == actionlib::SimpleClientGoalState::SUCCEEDED) {
+        result.success = true;
+        server->setPreempted(result);
         ROS_INFO("Succeeded!");
     }
-    else
+    else {
+        result.success = true;
+        server->setPreempted(result);
         ROS_INFO("Terminated");
+}
 }

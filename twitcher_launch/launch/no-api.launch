@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="twitcher_manager" name="manager" type="twitcher_manager_node" />
+    <node pkg="twitcher_interpreter" name="interpreter" type="twitcher_interpreter_node" />
+    <node pkg="twitcher_actions" name="actions" type="twitcher_actions_node" />
+</launch>

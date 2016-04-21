@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 <copyright holder> <email>
+ * Copyright 2016 Ricardo Delfin Garcia <ricardo.delfin.garcia@gmail.com>
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,8 @@ FaceDoor::~FaceDoor()
 
 void FaceDoor::executeAction(const twitcher_actions::FaceDoorGoal::ConstPtr& goal)
 {
+    twitcher_actions::FaceDoorResult result;
+
     // Wait for action executor server to start up
     Client client("action_executor/execute_plan", true);
     client.waitForServer();
@@ -84,16 +86,25 @@ void FaceDoor::executeAction(const twitcher_actions::FaceDoorGoal::ConstPtr& goa
         wait_rate.sleep();
     }
     if (client.getState() == actionlib::SimpleClientGoalState::ABORTED) {
+        result.success = false;
+        server->setAborted(result);
         ROS_INFO("Aborted");
     }
     else if (client.getState() == actionlib::SimpleClientGoalState::PREEMPTED) {
+        result.success = false;
+        server->setPreempted(result);
         ROS_INFO("Preempted");
     }
     
     else if (client.getState() == actionlib::SimpleClientGoalState::SUCCEEDED) {
         ROS_INFO("Succeeded!");
+        result.success = true;
+        server->setSucceeded(result);
     }
-    else
+    else {
+        result.success = false;
+        server->setAborted(result);
         ROS_INFO("Terminated");
+    }
 }
 

@@ -77,6 +77,7 @@ add_action_files(
   FILES
   GoToLocation.action
   FaceDoor.action
+  Say.action
 )
 
 ## Generate added messages and services with any dependencies listed here
@@ -146,7 +147,8 @@ include_directories(
 ## Declare a C++ executable
 add_executable(twitcher_actions_node src/twitcher_actions_node.cpp
                                      src/GoToLocation.cpp
-                                     src/facedoor.cpp)
+                                     src/facedoor.cpp
+                                     src/Say.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
