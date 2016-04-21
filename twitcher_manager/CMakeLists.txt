@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   actionlib
   actionlib_msgs
+  twitcher_connection
 )
 
 
@@ -100,7 +101,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES twitcher_manager
-  CATKIN_DEPENDS roscpp rospy std_msgs actionlib actionlib_msgs
+  CATKIN_DEPENDS roscpp rospy std_msgs actionlib actionlib_msgs twitcher_connection
   DEPENDS system_lib curl
 )
 

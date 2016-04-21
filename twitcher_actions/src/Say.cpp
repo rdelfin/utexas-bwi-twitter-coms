@@ -40,8 +40,9 @@ void Say::executeAction(const twitcher_actions::SayGoal::ConstPtr& goal)
 {
     twitcher_actions::SayResult result;
     std::string spoken_text = goal->message;
-    
+     
     sound_play::SoundRequest msg;
+    msg.sound = sound_play::SoundRequest::SAY;
     msg.command = sound_play::SoundRequest::PLAY_ONCE;
     msg.arg = spoken_text;
     
