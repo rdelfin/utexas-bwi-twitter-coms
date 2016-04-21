@@ -149,7 +149,8 @@ add_executable(twitcher_connection_node src/twitcher_connection_node.cpp
                                         src/SHA1.cpp
                                         src/HMAC_SHA1.cpp
                                         src/SendTweetServer.cpp
-                                        src/TwitterMentionsMonitor.cpp)
+                                        src/TwitterMentionsMonitor.cpp
+                                        src/config.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
