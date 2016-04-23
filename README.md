@@ -14,5 +14,13 @@ Packages
   * **twitcher_interpreter_node**: This node converts a given node into an action message, such as going to a certain room or finding a person.
 * **twitcher_actions**
   * **twitcher_actions_node**: This node executes the actions send by the interpreter/manager node. It does this through actionlib servers.
-* **twitcher_launch**
-  * **twitcher.launch**: Launches all the above nodes in the correct order. While, order does not necesarily matter, it is better to execute nodes through this file.
+* **twitcher_launch**: Contains launch files to run the necesary nodes for this module to work. Also contains configuration files.
+
+
+Configuration Files
+---
+
+Inside twitcher_launch you can find the `config` directory with two yaml files: `config-template.yaml` and `rooms.yaml`. The latter contains
+information on the rooms the robot can access (noticeably, it contains common names for the different rooms). The former file, `config-template.yaml`
+contains a template of the file needed to configure the twitter API and connect with the appropriate cedentials. This file should be renamed 
+`config.yaml` and filled in with the empty fields.
