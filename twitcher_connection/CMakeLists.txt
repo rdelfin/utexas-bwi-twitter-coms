@@ -3,8 +3,8 @@ project(twitcher_connection)
 
 message("Twitcher connection source dir is \"${CMAKE_SOURCE_DIR}\"")
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/twitter/cmake/Modules/")
-include(LibFindMacros)
+#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/twitter/cmake/Modules/")
+#include(LibFindMacros)
 
 set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 
