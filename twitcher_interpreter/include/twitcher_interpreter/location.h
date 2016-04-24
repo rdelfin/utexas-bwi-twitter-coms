@@ -35,7 +35,7 @@ public:
   Location(const std::string &name, const std::vector<std::string> &common_name);
   
   explicit Location(std::string json);
-  explicit Location(const XmlRpc::XmlRpcValue& val);
+  explicit Location(XmlRpc::XmlRpcValue val);
   
   bool isMentioned(std::string tweet);
   bool hasDoor();

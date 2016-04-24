@@ -50,13 +50,13 @@ void gotoDoorAndSay(Location* location, std::string spoken_text);
 
 int main(int argc, char* argv[])
 {
+    ros::init(argc, argv, "twitcher_interpreter_node");
+    
     // "Go to (.\\w\\s)+ and say (\\w\\s)+"
     goToTweetRegex = std::regex("Go to ([.\\w\\s]+) and say ([\\w\\s]+)",
                                 std::regex_constants::ECMAScript | std::regex_constants::icase);
-    
     initLocations();
     
-    ros::init(argc, argv, "twitcher_interpreter_node");
     ros::NodeHandle node;
     
     goToLocationClient = new actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>(node, "GoToLocation", true);
@@ -80,8 +80,11 @@ void initLocations() {
     ros::NodeHandle nh;
     
     if(nh.getParam("/twitter/rooms", rooms)) {
-        for(int i = 0; i < rooms.size(); i++)
-            loc.push_back(Location(rooms[i]));
+        for(int i = 0; i < rooms.size(); i++) {
+            XmlRpc::XmlRpcValue room = rooms[i];
+            Location newLoc = Location(rooms[i]);
+            loc.push_back(newLoc);
+        }
     }
     else
         ROS_ERROR("Rooms cannot be loaded! Check config/rooms.yaml in the twitcher_launch package.");

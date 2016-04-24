@@ -23,6 +23,8 @@
 
 #include <ros/ros.h>
 
+#include <string>
+
 using json = nlohmann::json;
 
 Location::Location()
@@ -50,17 +52,22 @@ Location::Location(std::string json_str)
     }
 }
 
-Location::Location(const XmlRpc::XmlRpcValue& val) {
-    asp_name = val["asp_name"];
+Location::Location(XmlRpc::XmlRpcValue val) {
+    asp_name = static_cast<std::string>(val["asp_name"]);
+    
+    ROS_INFO_STREAM("Common names size: " << val["common_names"][2]);
     
     for(int i = 0; i < val["common_names"].size(); i++) {
-        ROS_INFO_STREAM("Adding name " << val["common_names"][i]);
-        common_name.push_back(val["common_names"][i]);
+        std::string name = val["common_names"][i];
+        common_name.push_back(name);
     }
     
-    for(int i = 0; i < val["doors"].size(); i++)
-        ROS_INFO_STREAM("Adding door: " << val["doors"][i]);
-        common_name.push_back(val["doors"][i]);
+    if(val.hasMember("doors")) {
+        for(int i = 0; i < val["doors"].size(); i++) {
+            std::string door = val["doors"][i];
+            common_name.push_back(door);
+        }
+    }
 }
 
 bool Location::isMentioned(std::string tweet)
