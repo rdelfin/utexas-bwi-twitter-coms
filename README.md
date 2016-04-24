@@ -16,11 +16,39 @@ Packages
   * **twitcher_actions_node**: This node executes the actions send by the interpreter/manager node. It does this through actionlib servers.
 * **twitcher_launch**: Contains launch files to run the necesary nodes for this module to work. Also contains configuration files.
 
+Prerequisites and Dependencies
+---
+The `twitcher_interpreter` node requires makes use of the C++11 regex library, which was not implemented until GCC 4.9. For this reason, it must be installed and set as the default version of gcc. To do this, you must add the appropriate repository in apt, install it, and set it as the default version for both apt, which also sets the gcc alias. Here are the full set of commands:
+
+```bash
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo apt-get update
+sudo apt-get install gcc-4.9 g++-4.9
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.9
+sudo apt-get install gcc-4.8 g++-4.8
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.8
+```
+
+This will ensure you can switch back to GCC 4.8 (for whatever reason you would have to do that). To switch back, all you have to do is run:
+
+```bash
+sudo update-alternatives --config gcc
+```
+
+This is based on the askubuntu answer: http://askubuntu.com/a/581497
 
 Configuration Files
 ---
 
-Inside twitcher_launch you can find the `config` directory with two yaml files: `config-template.yaml` and `rooms.yaml`. The latter contains
+Inside `twitcher_launch` you can find the `config` directory with two yaml files: `config-template.yaml` and `rooms.yaml`. The latter contains
 information on the rooms the robot can access (noticeably, it contains common names for the different rooms). The former file, `config-template.yaml`
 contains a template of the file needed to configure the twitter API and connect with the appropriate cedentials. This file should be renamed 
 `config.yaml` and filled in with the empty fields.
+
+Future Work
+---
+
+* Make `twitcher_connection` more robust (it currently fails if the message format is different from expected).
+* Find alternate implementations of `twitcher_interpreter` that allow for any message format, instead of being constrained to a regex.
+* Add responses to tweets (such as "I'm on my way!" or "I just got to room **LOCATION**")
+
