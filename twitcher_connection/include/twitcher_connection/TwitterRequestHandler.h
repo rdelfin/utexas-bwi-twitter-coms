@@ -23,6 +23,8 @@
 #include <string>
 #include <map>
 
+#include <ros/ros.h>
+
 #include "twitcher_connection/TwitterApiCall.h"
 
 class TwitterRequestHandler
@@ -46,6 +48,8 @@ public:
 private:
     std::string authorizationHeader;
     std::string apiUrl;
+    
+    ros::NodeHandle nh;
 };
 
 #endif // TWITTERREQUESTHANDLER_H

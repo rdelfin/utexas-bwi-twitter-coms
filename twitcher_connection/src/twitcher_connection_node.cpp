@@ -35,7 +35,6 @@ int main(int argc, char* argv[])
     
     ros::NodeHandle nh;
     TwitterRequestHandler handler;
-    
     TwitterMentionsMonitor monitor(nh, handler);
     
     /* Initialize a SendTweet Action server */

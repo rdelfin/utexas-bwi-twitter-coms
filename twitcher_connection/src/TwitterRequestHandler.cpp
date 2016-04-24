@@ -17,7 +17,6 @@
 
 #include "twitcher_connection/TwitterRequestHandler.h"
 #include "twitcher_connection/OauthIdentity.h"
-#include <twitcher_connection/config.h>
 
 #include "json/json.hpp"
 
@@ -34,9 +33,9 @@
 using json = nlohmann::json;
 
 TwitterRequestHandler::TwitterRequestHandler()
-    : apiUrl(Config::getInstance()->twitterApi())
 {
-    
+    if(!nh.getParam("/twitter/twitter_api_url", apiUrl))
+        ROS_ERROR("TwitterRequestHandler could not load twitter_api_url! Check config/config.yaml in the twitcher_launch package.");
 }
 
 TwitterRequestHandler::TwitterRequestHandler(const TwitterRequestHandler& other)

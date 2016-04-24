@@ -16,11 +16,11 @@
  */
 
 #include "twitcher_connection/TwitterApiCall.h"
-#include <twitcher_connection/config.h>
 
 #include <fstream>
 
 TwitterApiCall::TwitterApiCall()
 {
-    url = Config::getInstance()->twitterApi();
+    if(!nh.getParam("/twitter/twitter_api_url", url))
+        ROS_ERROR("TwitterApiCall could not load twitter_api_url! Check config/config.yaml in the twitcher_launch package.");
 }

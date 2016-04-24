@@ -23,6 +23,8 @@
 #include <string>
 #include <map>
 
+#include <ros/ros.h>
+
 #include <curlpp/cURLpp.hpp>
 #include <curlpp/Options.hpp>
 #include <curlpp/Easy.hpp>
@@ -53,6 +55,8 @@ protected:
     HttpMethod method;
     OauthIdentity identity;
     curlpp::Easy *req;
+    
+    ros::NodeHandle nh;
 };
 
 #endif

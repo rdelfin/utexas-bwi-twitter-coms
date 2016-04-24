@@ -19,6 +19,10 @@
 #include <json/json.hpp>
 #include <string>
 
+#include <XmlRpc.h>
+
+#include <ros/ros.h>
+
 using json = nlohmann::json;
 
 Location::Location()
@@ -44,6 +48,19 @@ Location::Location(std::string json_str)
     for(int i = 0; i < root["doors"].size(); i++) {
         doors.push_back(root["doors"][i].get<std::string>());
     }
+}
+
+Location::Location(const XmlRpc::XmlRpcValue& val) {
+    asp_name = val["asp_name"];
+    
+    for(int i = 0; i < val["common_names"].size(); i++) {
+        ROS_INFO_STREAM("Adding name " << val["common_names"][i]);
+        common_name.push_back(val["common_names"][i]);
+    }
+    
+    for(int i = 0; i < val["doors"].size(); i++)
+        ROS_INFO_STREAM("Adding door: " << val["doors"][i]);
+        common_name.push_back(val["doors"][i]);
 }
 
 bool Location::isMentioned(std::string tweet)

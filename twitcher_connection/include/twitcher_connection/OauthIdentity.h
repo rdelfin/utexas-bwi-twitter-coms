@@ -21,6 +21,8 @@
 #include <string>
 #include <map>
 
+#include <ros/ros.h>
+
 class OauthIdentity
 {
 public:
@@ -54,6 +56,8 @@ private:
     std::string authHeader;
     std::string nonce;
     std::string timestamp;
+    
+    ros::NodeHandle nh;
     
     void generateOauthNonce();
     

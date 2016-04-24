@@ -31,12 +31,12 @@ TwitterMentionsMonitor::TwitterMentionsMonitor(ros::NodeHandle& nh,
                                                TwitterRequestHandler handler) : 
                                                lastTweetId(-1), handler(handler)
 {
+    ROS_INFO("Hello from metionsmonitors!");
     /* Call the timer callback every minute. This will cause the program to
      * process all the tweets and send them as messages through a topic */
     timer = nh.createTimer(ros::Duration(60.0), boost::bind(&TwitterMentionsMonitor::timerCallback, this, _1));
     mention_publisher = nh.advertise<twitcher_connection::Tweet>("twitter_mentions", 1000);
     start = boost::posix_time::second_clock::universal_time();
-    
     receiveNewMentions();
 }
     
@@ -53,6 +53,9 @@ void TwitterMentionsMonitor::receiveNewMentions()
     TwitterApiCall* call = new TwitterMentions(-1, lastTweetId, -1, false, false, false);
     
     std::string result = handler.makeRequest(call);
+    
+    ROS_INFO("We received the following mentions:");
+    ROS_INFO("%s", result.c_str());
     
     if(result == "" || result == "[]") return;
     
@@ -81,9 +84,6 @@ void TwitterMentionsMonitor::receiveNewMentions()
     }
     
     delete call;
-    
-    ROS_INFO("We received the following mentions:");
-    ROS_INFO("%s", result.c_str());
 }
 
 bool TwitterMentionsMonitor::IsDateAfterStart(std::string date)

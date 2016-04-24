@@ -19,6 +19,7 @@
 #define LOCATION_H
 
 #include <ros/ros.h>
+#include <XmlRpc.h>
 
 #include <string>
 #include <vector>
@@ -34,6 +35,7 @@ public:
   Location(const std::string &name, const std::vector<std::string> &common_name);
   
   explicit Location(std::string json);
+  explicit Location(const XmlRpc::XmlRpcValue& val);
   
   bool isMentioned(std::string tweet);
   bool hasDoor();

@@ -18,7 +18,6 @@
 #include "twitcher_connection/OauthIdentity.h"
 #include "twitcher_connection/base64.h"
 #include "twitcher_connection/HMAC_SHA1.h"
-#include <twitcher_connection/config.h>
 
 #include "json/json.hpp"
 
@@ -36,8 +35,6 @@
 
 using json = nlohmann::json;
 
-Config* Config::_instance = nullptr;
-
 OauthIdentity::OauthIdentity(std::string consumerKey, std::string consumerSecret,
                   std::string accessToken, std::string accessTokenSecret, 
                   std::string apiUrl, std::string version,
@@ -54,17 +51,25 @@ OauthIdentity::OauthIdentity(std::string consumerKey, std::string consumerSecret
 OauthIdentity::OauthIdentity(std::string apiUrl, 
                              std::map<std::string, std::string> queryVals,
                              std::string httpMethod)
-                            : OauthIdentity(
-                                            Config::getInstance()->oauthConsumerKey(),
-                                            Config::getInstance()->oauthConsumerSecret(),
-                                            Config::getInstance()->oauthToken(),
-                                            Config::getInstance()->oauthTokenSecret(),
-                                            Config::getInstance()->twitterApi(),
-                                            Config::getInstance()->oauthVersion(),
-                                            queryVals, httpMethod
-                                           )
+                            : queryVals(queryVals), httpMethod(httpMethod), apiUrl(apiUrl)
+                            
 {
     srand(time(NULL));
+    
+    if(!nh.getParam("/twitter/oauth/consumer_key", consumerKey))
+        ROS_ERROR("OauthIdentity could not load /twitter/oauth/consumer_key! Check config/config.yaml in the twitcher_launch package.");
+    
+    if(!nh.getParam("/twitter/oauth/consumer_secret", consumerSecret))
+        ROS_ERROR("TwitterApiCall could not load /twitter/oauth/consumer_secret! Check config/config.yaml in the twitcher_launch package.");
+    
+    if(!nh.getParam("/twitter/oauth/token", accessToken))
+        ROS_ERROR("TwitterApiCall could not load /twitter/oauth/token! Check config/config.yaml in the twitcher_launch package.");
+    
+    if(!nh.getParam("/twitter/oauth/token_secret", accessTokenSecret))
+        ROS_ERROR("TwitterApiCall could not load /twitter/oauth/token_secret! Check config/config.yaml in the twitcher_launch package.");
+    
+    if(!nh.getParam("/twitter/oauth/version", version))
+        ROS_ERROR("TwitterApiCall could not load /twitter/oauth/version! Check config/config.yaml in the twitcher_launch package.");
 }
 
 const std::string& OauthIdentity::getAuthHeader()

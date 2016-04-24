@@ -21,6 +21,7 @@
 #include <fstream>
 
 #include <ros/ros.h>
+#include <XmlRpc.h>
 #include <actionlib/client/simple_action_client.h>
 
 #include "json/json.hpp"
@@ -74,14 +75,16 @@ int main(int argc, char* argv[])
 }
 
 void initLocations() {
-    std::ifstream file_stream("/home/users/fri/Documents/rooms.json");
-    json root;
+    XmlRpc::XmlRpcValue rooms;
     
-    file_stream >> root;
+    ros::NodeHandle nh;
     
-    for(int i = 0; i < root.size(); i++) {
-        loc.push_back(Location(root[i].dump()));
+    if(nh.getParam("/twitter/rooms", rooms)) {
+        for(int i = 0; i < rooms.size(); i++)
+            loc.push_back(Location(rooms[i]));
     }
+    else
+        ROS_ERROR("Rooms cannot be loaded! Check config/rooms.yaml in the twitcher_launch package.");
 }
 
 void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr& msg)
