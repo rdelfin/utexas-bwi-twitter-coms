@@ -18,6 +18,9 @@ Packages
 
 Prerequisites and Dependencies
 ---
+* GCC 4.9 or higher
+* curlpp package
+
 The `twitcher_interpreter` node requires makes use of the C++11 regex library, which was not implemented until GCC 4.9. For this reason, it must be installed and set as the default version of gcc. To do this, you must add the appropriate repository in apt, install it, and set it as the default version for both apt, which also sets the gcc alias. Here are the full set of commands:
 
 ```bash
@@ -25,7 +28,6 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 sudo apt-get update
 sudo apt-get install gcc-4.9 g++-4.9
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.9
-sudo apt-get install gcc-4.8 g++-4.8
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.8
 ```
 
