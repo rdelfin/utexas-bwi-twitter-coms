@@ -166,7 +166,7 @@ void sendResponse(const std::string& message, const std::string& user_id) {
     handleFromIdClient.call(req, res);
     
     twitcher_connection::SendTweetGoal goal;
-    goal.message = res.handle + message;
+    goal.message = "@" + res.handle + " " + message;
     
     sendTweetClient->sendGoal(goal);
     sendTweetClient->waitForResult();
