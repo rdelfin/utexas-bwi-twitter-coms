@@ -24,26 +24,26 @@
 #include <XmlRpc.h>
 #include <actionlib/client/simple_action_client.h>
 
-#include "json/json.hpp"
-
 #include <twitcher_actions/GoToLocationAction.h>
 #include <twitcher_actions/FaceDoorAction.h>
 #include <twitcher_actions/SayAction.h>
 
+#include <twitcher_interpreter/interpret_dialog.h>
+
 #include "twitcher_interpreter/dialog_message.h"
 #include "twitcher_interpreter/location.h"
-
-using json = nlohmann::json;
 
 actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>* goToLocationClient;
 actionlib::SimpleActionClient<twitcher_actions::FaceDoorAction>* faceDoorClient;
 actionlib::SimpleActionClient<twitcher_actions::SayAction>* sayClient;
 
 std::vector<Location> loc;
-std::regex goToTweetRegex;
+std::regex goToAndSayTweetRegex, goToTweetRegex;
 
 
-void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr&);
+bool interpreterCallback(twitcher_interpreter::interpret_dialog::Request &req,
+                         twitcher_interpreter::interpret_dialog::Response &res);
+
 void initLocations();
 bool locExists(std::string msg, Location** loc);
 void gotoDoorAndSay(Location* location, std::string spoken_text);
@@ -53,8 +53,10 @@ int main(int argc, char* argv[])
     ros::init(argc, argv, "twitcher_interpreter_node");
     
     // "Go to (.\\w\\s)+ and say (\\w\\s)+"
-    goToTweetRegex = std::regex("Go to ([.\\w\\s]+) and say ([\\w\\s]+)",
+    goToTweetRegex = std::regex("Go to ([.\\w\\s]+)",
                                 std::regex_constants::ECMAScript | std::regex_constants::icase);
+    goToAndSayTweetRegex = std::regex("Go to ([.\\w\\s]+) and say ([\\w\\s]+)",
+                                      std::regex_constants::ECMAScript | std::regex_constants::icase);
     initLocations();
     
     ros::NodeHandle node;
@@ -67,7 +69,8 @@ int main(int argc, char* argv[])
     
     ROS_INFO_STREAM("Twitcher Interpreter Node up, listening on /GoToLocation");
     
-    ros::Subscriber subscriber = node.subscribe("dialog", 100, messageReceiver);
+    ros::ServiceServer server = node.advertiseService("twitter/interpret_message", interpreterCallback);
+    //ros::Subscriber subscriber = node.subscribe("dialog", 100, messageReceiver);
     
     ros::spin();
     
@@ -90,31 +93,51 @@ void initLocations() {
         ROS_ERROR("Rooms cannot be loaded! Check config/rooms.yaml in the twitcher_launch package.");
 }
 
-void messageReceiver(const twitcher_interpreter::dialog_message::ConstPtr& msg)
+bool interpreterCallback(twitcher_interpreter::interpret_dialog::Request& req, twitcher_interpreter::interpret_dialog::Response& res)
 {
-    ROS_INFO_STREAM("Interpreter received message: \"" << msg->message << 
-                    "\" with timestamp " << msg->datetime);
+    ROS_INFO_STREAM("Interpreter received message: \"" << req.message << 
+                    "\" with timestamp " << req.datetime);
     
-    std::string msgString = msg->message;
+    std::string msgString = req.message;
     
-    auto it = std::sregex_iterator(msgString.begin(), msgString.end(), goToTweetRegex);
+    auto it1 = std::sregex_iterator(msgString.begin(), msgString.end(), goToAndSayTweetRegex);
+    auto it2 = std::sregex_iterator(msgString.begin(), msgString.end(), goToTweetRegex);
+    
+    
+    // Default to not finding any relevant text
+    res.action = twitcher_interpreter::interpret_dialog::Response::NONE;
     
     // The string was found. Execute action
-    if(it != std::sregex_iterator()) {
-        ROS_INFO("Tweet matched!");
-        std::smatch match = *it;
+    if(it1 != std::sregex_iterator()) {
+        ROS_INFO("Tweet matched with go to location and say!");
+        std::smatch match = *it1;
         std::string location_name = match.str(1);
         std::string spoken_text = match.str(2);
         Location *location;
         if(locExists(location_name, &location)) {
-	    ROS_INFO_STREAM("Location matched to: " << location->getAspName() << " with message \"" << spoken_text << "\"");
-            gotoDoorAndSay(location, spoken_text);
+            ROS_INFO_STREAM("Location matched to: " << location->getAspName() << " with message \"" << spoken_text << "\"");
+            res.action = twitcher_interpreter::interpret_dialog::Response::GO_TO_AND_SAY;
+            res.args.push_back(location->getAspName());
+            res.args.push_back(spoken_text);
+        }
+    }
+    else if(it2 != std::sregex_iterator()) {
+        ROS_INFO("Tweet matched with go to location!");
+        std::smatch match = *it2;
+        std::string location_name = match.str(1);
+        Location *location;
+        if(locExists(location_name, &location)) {
+            ROS_INFO_STREAM("Location matched to: " << location->getAspName());
+            res.action = twitcher_interpreter::interpret_dialog::Response::GO_TO_ACTION;
+            res.args.push_back(location->getAspName());
         }
     }
     else
     {
         ROS_INFO("Tweet did not match!");
     }
+    
+    return true;
 }
 
 bool locExists(std::string msg, Location** result) {
