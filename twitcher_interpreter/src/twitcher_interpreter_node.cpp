@@ -48,7 +48,6 @@ int main(int argc, char* argv[])
 {
     ros::init(argc, argv, "twitcher_interpreter_node");
     
-    // "Go to (.\\w\\s)+ and say (\\w\\s)+"
     goToTweetRegex = std::regex("Go to ([.\\w\\s]+)",
                                 std::regex_constants::ECMAScript | std::regex_constants::icase);
     goToAndSayTweetRegex = std::regex("Go to ([.\\w\\s]+) and say ([\\w\\s]+)",
