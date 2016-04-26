@@ -24,25 +24,55 @@
 #include "twitcher_connection/TwitterUpdateStatus.h"
 #include "twitcher_connection/SendTweetServer.h"
 #include "twitcher_connection/TwitterMentionsMonitor.h"
+#include "twitcher_connection/TwitterShowUser.h"
 
 #include <twitcher_connection/SendTweetAction.h>
+#include <twitcher_connection/handle_from_id.h>
 
 #include <actionlib/client/simple_action_client.h>
+
+#include <json/json.hpp>
+
+using json = nlohmann::json;
+
+ros::ServiceServer idConverter;
+TwitterRequestHandler handler;
+
+bool idConverterCallback(twitcher_connection::handle_from_id::Request&, twitcher_connection::handle_from_id::Response&);
 
 int main(int argc, char* argv[])
 {
     ros::init(argc, argv, "twitcher_connection_node");
     
     ros::NodeHandle nh;
-    TwitterRequestHandler handler;
     TwitterMentionsMonitor monitor(nh, handler);
     
     /* Initialize a SendTweet Action server */
     SendTweetServer sendTweet("send_tweet", handler);
     
+    idConverter = nh.advertiseService("twitter/handle_from_id", idConverterCallback);
+    
     ros::spin();
 
     return 0;
     
+}
+
+bool idConverterCallback(twitcher_connection::handle_from_id::Request& req, twitcher_connection::handle_from_id::Response& res)
+{
+    TwitterShowUser* showApi = new TwitterShowUser(req.id, "");
+    std::string result = handler.makeRequest(showApi);
+    delete showApi;
+    
+    if(result == "" || result == "[]") {
+        res.handle = "";
+        return false;
+    }
+    
+    json root = json::parse(result);
+    
+    res.handle = root["screen_name"];
+    
+    return true;
 }
 
