@@ -33,10 +33,6 @@
 #include "twitcher_interpreter/dialog_message.h"
 #include "twitcher_interpreter/location.h"
 
-actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>* goToLocationClient;
-actionlib::SimpleActionClient<twitcher_actions::FaceDoorAction>* faceDoorClient;
-actionlib::SimpleActionClient<twitcher_actions::SayAction>* sayClient;
-
 std::vector<Location> loc;
 std::regex goToAndSayTweetRegex, goToTweetRegex;
 
@@ -61,20 +57,12 @@ int main(int argc, char* argv[])
     
     ros::NodeHandle node;
     
-    goToLocationClient = new actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>(node, "GoToLocation", true);
-    faceDoorClient = new actionlib::SimpleActionClient<twitcher_actions::FaceDoorAction>(node, "FaceDoor", true);
-    sayClient = new actionlib::SimpleActionClient<twitcher_actions::SayAction>(node, "SayTwitter", true);
-
-    goToLocationClient->waitForServer();
-    
     ROS_INFO_STREAM("Twitcher Interpreter Node up, listening on /GoToLocation");
     
     ros::ServiceServer server = node.advertiseService("twitter/interpret_message", interpreterCallback);
     //ros::Subscriber subscriber = node.subscribe("dialog", 100, messageReceiver);
     
     ros::spin();
-    
-    delete goToLocationClient;
 }
 
 void initLocations() {
