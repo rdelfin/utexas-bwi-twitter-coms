@@ -1,6 +1,5 @@
 #goal definition
 string message
-string account
 ---
 #result definition
 bool success

@@ -20,12 +20,16 @@
 #include <actionlib/client/simple_action_client.h>
 
 #include "twitcher_connection/Tweet.h"
+#include <twitcher_connection/handle_from_id.h>
+#include <twitcher_connection/SendTweetAction.h>
+
 #include "twitcher_interpreter/dialog_message.h"
 #include <twitcher_interpreter/interpret_dialog.h>
 
 #include <twitcher_actions/FaceDoorAction.h>
 #include <twitcher_actions/GoToLocationAction.h>
 #include <twitcher_actions/SayAction.h>
+#include <sys/socket.h>
 
 ros::ServiceClient interpreterClient;
 
@@ -34,10 +38,17 @@ actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>* goToLocatio
 actionlib::SimpleActionClient<twitcher_actions::FaceDoorAction>* faceDoorClient;
 actionlib::SimpleActionClient<twitcher_actions::SayAction>* sayClient;
 
+actionlib::SimpleActionClient<twitcher_connection::SendTweetAction>* sendTweetClient;
+
+
+
+ros::ServiceClient handleFromIdClient;
+
 void tweetReceived(const twitcher_connection::Tweet::ConstPtr&);
-void actOnTweet(const twitcher_connection::Tweet::ConstPtr& tweet, const twitcher_interpreter::interpret_dialog::Response& res);
-void goToLocationAndSay(const twitcher_interpreter::named_location& location, const std::string& text);
-void goToLocation(const twitcher_interpreter::named_location& location);
+void actOnTweet(const twitcher_connection::Tweet::ConstPtr&, const twitcher_interpreter::interpret_dialog::Response&);
+void goToLocationAndSay(const twitcher_interpreter::named_location&, const std::string&);
+void goToLocation(const twitcher_interpreter::named_location&);
+void sendResponse(const std::string&, const std::string&);
 
 int main(int argc, char* argv[])
 {
@@ -49,18 +60,23 @@ int main(int argc, char* argv[])
     interpreterClient = node.serviceClient<twitcher_interpreter::interpret_dialog>("twitter/interpret_message");
     interpreterClient.waitForExistence();
     
+    // Connect to twitcher_connection handle from id
+    handleFromIdClient = node.serviceClient<twitcher_connection::handle_from_id>("twitter/handle_from_id");
+    handleFromIdClient.waitForExistence();
+    
     // Connect to twitter_mentions (from twitcher_connection)
-    ros::Subscriber subscriber = node.subscribe("twitter_mentions", 1000, 
-                                                tweetReceived);
+    ros::Subscriber subscriber = node.subscribe("twitter_mentions", 1000, tweetReceived);
     
     // Set up action clients for twitcher_actions
     goToLocationClient = new actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>(node, "GoToLocation", true);
     faceDoorClient = new actionlib::SimpleActionClient<twitcher_actions::FaceDoorAction>(node, "FaceDoor", true);
     sayClient = new actionlib::SimpleActionClient<twitcher_actions::SayAction>(node, "SayTwitter", true);
+    sendTweetClient = new actionlib::SimpleActionClient<twitcher_connection::SendTweetAction>(node, "send_tweet", true);
 
     goToLocationClient->waitForServer();
     faceDoorClient->waitForServer();
     sayClient->waitForServer();
+    sendTweetClient->waitForServer();
     
     ros::spin();
     
@@ -90,10 +106,15 @@ void tweetReceived(const twitcher_connection::Tweet::ConstPtr& tweet)
 void actOnTweet(const twitcher_connection::Tweet::ConstPtr& tweet, const twitcher_interpreter::interpret_dialog::Response& res) {
     switch(res.action) {
         case twitcher_interpreter::interpret_dialog::Response::GO_TO_ACTION:
+            sendResponse(tweet->sender, "Alrighty! I'm on my way.");
             goToLocation(res.loc_args[0]);
+            sendResponse(tweet->sender, "I just got there!");
             break;
         case twitcher_interpreter::interpret_dialog::Response::GO_TO_AND_SAY:
+            sendResponse(tweet->sender, "Alrighty! I'll be sure to say that.");
             goToLocationAndSay(res.loc_args[0], res.string_args[0]);
+            sendResponse(tweet->sender, "The appropriate person has been annoyed!");
+            break;
     }
 }
 
@@ -134,4 +155,19 @@ void goToLocation(const twitcher_interpreter::named_location& location)
         
         ROS_INFO("Finished go to action!");
     }
+}
+
+void sendResponse(const std::string& message, const std::string& user_id) {
+    twitcher_connection::handle_from_id::Request req;
+    twitcher_connection::handle_from_id::Response res;
+    
+    req.id = user_id;
+    
+    handleFromIdClient.call(req, res);
+    
+    twitcher_connection::SendTweetGoal goal;
+    goal.message = res.handle + message;
+    
+    sendTweetClient->sendGoal(goal);
+    sendTweetClient->waitForResult();
 }
