@@ -117,8 +117,8 @@ bool interpreterCallback(twitcher_interpreter::interpret_dialog::Request& req, t
         if(locExists(location_name, &location)) {
             ROS_INFO_STREAM("Location matched to: " << location->getAspName() << " with message \"" << spoken_text << "\"");
             res.action = twitcher_interpreter::interpret_dialog::Response::GO_TO_AND_SAY;
-            res.args.push_back(location->getAspName());
-            res.args.push_back(spoken_text);
+            res.loc_args.push_back(location->serialize());
+            res.string_args.push_back(spoken_text);
         }
     }
     else if(it2 != std::sregex_iterator()) {
@@ -129,7 +129,7 @@ bool interpreterCallback(twitcher_interpreter::interpret_dialog::Request& req, t
         if(locExists(location_name, &location)) {
             ROS_INFO_STREAM("Location matched to: " << location->getAspName());
             res.action = twitcher_interpreter::interpret_dialog::Response::GO_TO_ACTION;
-            res.args.push_back(location->getAspName());
+            res.loc_args.push_back(location->serialize());
         }
     }
     else
@@ -149,33 +149,4 @@ bool locExists(std::string msg, Location** result) {
     }
     
     return false;
-}
-
-void gotoDoorAndSay(Location* location, std::string spoken_text) {
-    if(location->hasDoor()) {
-        ROS_INFO("Sending face door! Setup...");
-        twitcher_actions::FaceDoorGoal face_goal;
-        face_goal.door_name = location->getFirstDoor();
-        faceDoorClient->sendGoal(face_goal);
-        ROS_INFO("Sent face door goal! Waiting...");
-        faceDoorClient->waitForResult();
-        ROS_INFO("Finished face door action!");
-    }
-    else {
-        ROS_INFO("Sending go to goal! Setup...");
-        twitcher_actions::GoToLocationGoal goto_goal;
-        goto_goal.location_name = location->getAspName();
-        goToLocationClient->sendGoal(goto_goal);
-        ROS_INFO("Sent go to goal! Waiting...");
-        goToLocationClient->waitForResult();
-        ROS_INFO("Finished go to action!");
-    }
-    
-    ROS_INFO("Setting up say...");
-    twitcher_actions::SayGoal say_goal;
-    say_goal.message = spoken_text;
-    sayClient->sendGoal(say_goal);
-    ROS_INFO("Say goal sent. Waiting for completion...");
-    sayClient->waitForResult();
-    ROS_INFO("Say finished!");
 }

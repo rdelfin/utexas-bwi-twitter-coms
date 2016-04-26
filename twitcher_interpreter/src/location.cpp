@@ -16,6 +16,7 @@
  */
 
 #include <twitcher_interpreter/location.h>
+#include <twitcher_interpreter/named_location.h>
 #include <json/json.hpp>
 #include <string>
 
@@ -93,6 +94,14 @@ std::string Location::getFirstDoor()
 
 std::string Location::getAspName() {
     return this->asp_name;
+}
+
+twitcher_interpreter::named_location Location::serialize() {
+    twitcher_interpreter::named_location result;
+    
+    result.asp_name = asp_name;
+    result.common_name = common_name;
+    result.doors = doors;
 }
 
 Location::~Location()

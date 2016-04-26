@@ -24,6 +24,8 @@
 #include <string>
 #include <vector>
 
+#include <twitcher_interpreter/named_location.h>
+
 class Location
 {
 private:
@@ -42,6 +44,8 @@ public:
   std::string getFirstDoor();
   
   std::string getAspName();
+  
+  twitcher_interpreter::named_location serialize();
 
   
   ~Location();
