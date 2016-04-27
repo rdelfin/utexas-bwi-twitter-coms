@@ -36,25 +36,29 @@
 std::vector<Location> loc;
 std::regex goToAndSayTweetRegex, goToTweetRegex;
 
+twitcher_interpreter::named_location tempLoc;
+std::string tempString;
+
 
 bool interpreterCallback(twitcher_interpreter::interpret_dialog::Request &req,
                          twitcher_interpreter::interpret_dialog::Response &res);
 
-void initLocations();
+void initLocations(ros::NodeHandle&);
 bool locExists(std::string msg, Location** loc);
 void gotoDoorAndSay(Location* location, std::string spoken_text);
 
 int main(int argc, char* argv[])
 {
     ros::init(argc, argv, "twitcher_interpreter_node");
+    ros::NodeHandle node;
     
     goToTweetRegex = std::regex("Go to ([.\\w\\s]+)",
                                 std::regex_constants::ECMAScript | std::regex_constants::icase);
     goToAndSayTweetRegex = std::regex("Go to ([.\\w\\s]+) and say ([\\w\\s]+)",
                                       std::regex_constants::ECMAScript | std::regex_constants::icase);
-    initLocations();
     
-    ros::NodeHandle node;
+    initLocations(node);
+    
     
     ROS_INFO_STREAM("Twitcher Interpreter Node up, listening on /GoToLocation");
     
@@ -64,20 +68,25 @@ int main(int argc, char* argv[])
     ros::spin();
 }
 
-void initLocations() {
-    XmlRpc::XmlRpcValue rooms;
+void initLocations(ros::NodeHandle& nh) {
+    ROS_INFO("Loading locations...");
     
-    ros::NodeHandle nh;
+    XmlRpc::XmlRpcValue rooms;
     
     if(nh.getParam("/twitter/rooms", rooms)) {
         for(int i = 0; i < rooms.size(); i++) {
+            ROS_INFO_STREAM("LOC #" << i);
             XmlRpc::XmlRpcValue room = rooms[i];
             Location newLoc = Location(rooms[i]);
             loc.push_back(newLoc);
         }
     }
-    else
+    else {
         ROS_ERROR("Rooms cannot be loaded! Check config/rooms.yaml in the twitcher_launch package.");
+    }
+    
+    ROS_INFO("Locations loaded!");
+    return;
 }
 
 bool interpreterCallback(twitcher_interpreter::interpret_dialog::Request& req, twitcher_interpreter::interpret_dialog::Response& res)
@@ -104,7 +113,7 @@ bool interpreterCallback(twitcher_interpreter::interpret_dialog::Request& req, t
         if(locExists(location_name, &location)) {
             ROS_INFO_STREAM("Location matched to: " << location->getAspName() << " with message \"" << spoken_text << "\"");
             res.action = twitcher_interpreter::interpret_dialog::Response::GO_TO_AND_SAY;
-            res.loc_args.push_back(location->serialize());
+            res.string_args.push_back(location->serialize());
             res.string_args.push_back(spoken_text);
         }
     }
@@ -116,7 +125,7 @@ bool interpreterCallback(twitcher_interpreter::interpret_dialog::Request& req, t
         if(locExists(location_name, &location)) {
             ROS_INFO_STREAM("Location matched to: " << location->getAspName());
             res.action = twitcher_interpreter::interpret_dialog::Response::GO_TO_ACTION;
-            res.loc_args.push_back(location->serialize());
+            res.string_args.push_back(location->serialize());
         }
     }
     else

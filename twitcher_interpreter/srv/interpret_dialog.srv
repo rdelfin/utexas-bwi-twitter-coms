@@ -11,4 +11,3 @@ uint32 NONE = 0
 # Response fields
 uint32 action
 string[] string_args
-twitcher_interpreter/named_location[] loc_args

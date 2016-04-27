@@ -45,7 +45,7 @@ public:
   
   std::string getAspName();
   
-  twitcher_interpreter::named_location serialize();
+  std::string serialize();
 
   
   ~Location();

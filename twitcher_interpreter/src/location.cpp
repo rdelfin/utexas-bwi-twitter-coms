@@ -56,8 +56,6 @@ Location::Location(std::string json_str)
 Location::Location(XmlRpc::XmlRpcValue val) {
     asp_name = static_cast<std::string>(val["asp_name"]);
     
-    ROS_INFO_STREAM("Common names size: " << val["common_names"][2]);
-    
     for(int i = 0; i < val["common_names"].size(); i++) {
         std::string name = val["common_names"][i];
         common_name.push_back(name);
@@ -66,7 +64,7 @@ Location::Location(XmlRpc::XmlRpcValue val) {
     if(val.hasMember("doors")) {
         for(int i = 0; i < val["doors"].size(); i++) {
             std::string door = val["doors"][i];
-            common_name.push_back(door);
+            doors.push_back(door);
         }
     }
 }
@@ -96,12 +94,13 @@ std::string Location::getAspName() {
     return this->asp_name;
 }
 
-twitcher_interpreter::named_location Location::serialize() {
-    twitcher_interpreter::named_location result;
+std::string Location::serialize() {
+    json j;
+    j["asp_name"] = asp_name;
+    j["common_name"] = common_name;
+    j["doors"] = doors;
     
-    result.asp_name = asp_name;
-    result.common_name = common_name;
-    result.doors = doors;
+    return j.dump();
 }
 
 Location::~Location()
