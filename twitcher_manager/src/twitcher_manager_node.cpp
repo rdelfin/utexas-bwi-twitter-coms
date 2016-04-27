@@ -19,6 +19,8 @@
 
 #include <actionlib/client/simple_action_client.h>
 
+#include <json/json.hpp>
+
 #include "twitcher_connection/Tweet.h"
 #include <twitcher_connection/handle_from_id.h>
 #include <twitcher_connection/SendTweetAction.h>
@@ -29,7 +31,8 @@
 #include <twitcher_actions/FaceDoorAction.h>
 #include <twitcher_actions/GoToLocationAction.h>
 #include <twitcher_actions/SayAction.h>
-#include <sys/socket.h>
+
+using json = nlohmann::json;
 
 ros::ServiceClient interpreterClient;
 
@@ -46,8 +49,8 @@ ros::ServiceClient handleFromIdClient;
 
 void tweetReceived(const twitcher_connection::Tweet::ConstPtr&);
 void actOnTweet(const twitcher_connection::Tweet::ConstPtr&, const twitcher_interpreter::interpret_dialog::Response&);
-void goToLocationAndSay(const twitcher_interpreter::named_location&, const std::string&);
-void goToLocation(const twitcher_interpreter::named_location&);
+void goToLocationAndSay(const std::string&, const std::string&);
+void goToLocation(const std::string&);
 void sendResponse(const std::string&, const std::string&);
 
 int main(int argc, char* argv[])
@@ -119,19 +122,19 @@ void actOnTweet(const twitcher_connection::Tweet::ConstPtr& tweet, const twitche
     switch(res.action) {
         case twitcher_interpreter::interpret_dialog::Response::GO_TO_ACTION:
             sendResponse(tweet->sender, "Alrighty! I'm on my way.");
-            goToLocation(res.loc_args[0]);
+            goToLocation(res.string_args[0]);
             sendResponse(tweet->sender, "I just got there!");
             break;
         case twitcher_interpreter::interpret_dialog::Response::GO_TO_AND_SAY:
             sendResponse(tweet->sender, "Alrighty! I'll be sure to say that.");
-            goToLocationAndSay(res.loc_args[0], res.string_args[0]);
+            goToLocationAndSay(res.string_args[0], res.string_args[1]);
             sendResponse(tweet->sender, "The appropriate person has been annoyed!");
             break;
     }
 }
 
 
-void goToLocationAndSay(const twitcher_interpreter::named_location& location, const std::string& text)
+void goToLocationAndSay(const std::string& location, const std::string& text)
 {
     goToLocation(location);
     
@@ -145,13 +148,18 @@ void goToLocationAndSay(const twitcher_interpreter::named_location& location, co
     ROS_INFO("Say finished!");
 }
 
-void goToLocation(const twitcher_interpreter::named_location& location)
+void goToLocation(const std::string& location)
 {
-    if(location.doors.size() != 0) {
+    json roomData = json::parse(location);
+    
+    ROS_INFO_STREAM("Ready for location!");
+    ROS_INFO_STREAM("Going to location " << roomData["asp_name"]);
+    
+    if(roomData["doors"].size() != 0) {
         ROS_INFO("Sending face door!");
         
         twitcher_actions::FaceDoorGoal face_goal;
-        face_goal.door_name = location.doors[0];
+        face_goal.door_name = roomData["doors"][0];
         faceDoorClient->sendGoal(face_goal);
         faceDoorClient->waitForResult();
         
@@ -161,7 +169,7 @@ void goToLocation(const twitcher_interpreter::named_location& location)
         ROS_INFO("Sending go to goal! Setup...");
         
         twitcher_actions::GoToLocationGoal goto_goal;
-        goto_goal.location_name = location.asp_name;
+        goto_goal.location_name = roomData["asp_name"];
         goToLocationClient->sendGoal(goto_goal);
         goToLocationClient->waitForResult();
         
