@@ -121,14 +121,14 @@ void tweetReceived(const twitcher_connection::Tweet::ConstPtr& tweet)
 void actOnTweet(const twitcher_connection::Tweet::ConstPtr& tweet, const twitcher_interpreter::interpret_dialog::Response& res) {
     switch(res.action) {
         case twitcher_interpreter::interpret_dialog::Response::GO_TO_ACTION:
-            sendResponse(tweet->sender, "Alrighty! I'm on my way.");
+            sendResponse("Alrighty! I'm on my way.", tweet->sender);
             goToLocation(res.string_args[0]);
-            sendResponse(tweet->sender, "I just got there!");
+            sendResponse("I just got there!", tweet->sender);
             break;
         case twitcher_interpreter::interpret_dialog::Response::GO_TO_AND_SAY:
-            sendResponse(tweet->sender, "Alrighty! I'll be sure to say that.");
+            sendResponse("Alrighty! I'll be sure to say that.", tweet->sender);
             goToLocationAndSay(res.string_args[0], res.string_args[1]);
-            sendResponse(tweet->sender, "The appropriate person has been annoyed!");
+            sendResponse("The appropriate person has been annoyed!", tweet->sender);
             break;
     }
 }
@@ -181,10 +181,13 @@ void sendResponse(const std::string& message, const std::string& user_id) {
     if(!useApi)
         return;
     
+    ROS_INFO_STREAM("Sending tweet: \"" << message << "\" to user ID " << user_id);
+    
     twitcher_connection::handle_from_id::Request req;
     twitcher_connection::handle_from_id::Response res;
     
     req.id = user_id;
+    res.handle = user_id;
     
     handleFromIdClient.call(req, res);
     

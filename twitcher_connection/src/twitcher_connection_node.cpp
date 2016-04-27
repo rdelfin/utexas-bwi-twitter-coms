@@ -70,11 +70,15 @@ bool idConverterCallback(twitcher_connection::handle_from_id::Request& req, twit
     delete showApi;
     
     if(result == "" || result == "[]") {
+        ROS_WARN("Response from Show user API was empty!");
         res.handle = "";
         return false;
     }
     
     json root = json::parse(result);
+    
+    ROS_INFO_STREAM("Screen name result: " << root["screen_name"]);
+    ROS_INFO_STREAM("Screen name lookup response: " << result);
     
     res.handle = root["screen_name"];
     
