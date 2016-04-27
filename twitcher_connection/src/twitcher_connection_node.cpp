@@ -36,7 +36,7 @@
 using json = nlohmann::json;
 
 ros::ServiceServer idConverter;
-TwitterRequestHandler handler;
+TwitterRequestHandler* handler;
 
 bool idConverterCallback(twitcher_connection::handle_from_id::Request&, twitcher_connection::handle_from_id::Response&);
 
@@ -45,14 +45,19 @@ int main(int argc, char* argv[])
     ros::init(argc, argv, "twitcher_connection_node");
     
     ros::NodeHandle nh;
-    TwitterMentionsMonitor monitor(nh, handler);
+    
+    handler = new TwitterRequestHandler;
+    
+    TwitterMentionsMonitor monitor(nh, *handler);
     
     /* Initialize a SendTweet Action server */
-    SendTweetServer sendTweet("send_tweet", handler);
+    SendTweetServer sendTweet("send_tweet", *handler);
     
     idConverter = nh.advertiseService("twitter/handle_from_id", idConverterCallback);
     
     ros::spin();
+    
+    delete handler;
 
     return 0;
     
@@ -61,7 +66,7 @@ int main(int argc, char* argv[])
 bool idConverterCallback(twitcher_connection::handle_from_id::Request& req, twitcher_connection::handle_from_id::Response& res)
 {
     TwitterShowUser* showApi = new TwitterShowUser(req.id, "");
-    std::string result = handler.makeRequest(showApi);
+    std::string result = handler->makeRequest(showApi);
     delete showApi;
     
     if(result == "" || result == "[]") {

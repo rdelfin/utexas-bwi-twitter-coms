@@ -40,7 +40,7 @@ actionlib::SimpleActionClient<twitcher_actions::SayAction>* sayClient;
 
 actionlib::SimpleActionClient<twitcher_connection::SendTweetAction>* sendTweetClient;
 
-
+bool useApi;
 
 ros::ServiceClient handleFromIdClient;
 
@@ -56,13 +56,19 @@ int main(int argc, char* argv[])
     
     ros::NodeHandle node;
     
+    // Parameters to load in:
+    if(!node.getParam("/twitter/useapi", useApi))
+        useApi = true;
+    
     // Connect to interpreter
     interpreterClient = node.serviceClient<twitcher_interpreter::interpret_dialog>("twitter/interpret_message");
     interpreterClient.waitForExistence();
     
     // Connect to twitcher_connection handle from id
-    handleFromIdClient = node.serviceClient<twitcher_connection::handle_from_id>("twitter/handle_from_id");
-    handleFromIdClient.waitForExistence();
+    if(useApi) {
+        handleFromIdClient = node.serviceClient<twitcher_connection::handle_from_id>("twitter/handle_from_id");
+        handleFromIdClient.waitForExistence();
+    }
     
     // Connect to twitter_mentions (from twitcher_connection)
     ros::Subscriber subscriber = node.subscribe("twitter_mentions", 1000, tweetReceived);
@@ -71,18 +77,24 @@ int main(int argc, char* argv[])
     goToLocationClient = new actionlib::SimpleActionClient<twitcher_actions::GoToLocationAction>(node, "GoToLocation", true);
     faceDoorClient = new actionlib::SimpleActionClient<twitcher_actions::FaceDoorAction>(node, "FaceDoor", true);
     sayClient = new actionlib::SimpleActionClient<twitcher_actions::SayAction>(node, "SayTwitter", true);
-    sendTweetClient = new actionlib::SimpleActionClient<twitcher_connection::SendTweetAction>(node, "send_tweet", true);
+    
+    if(useApi) {
+        sendTweetClient = new actionlib::SimpleActionClient<twitcher_connection::SendTweetAction>(node, "send_tweet", true);
+        sendTweetClient->waitForServer();
+    }
 
     goToLocationClient->waitForServer();
     faceDoorClient->waitForServer();
     sayClient->waitForServer();
-    sendTweetClient->waitForServer();
     
     ros::spin();
     
     delete goToLocationClient;
     delete faceDoorClient;
     delete sayClient;
+    
+    if(sendTweetClient)
+        delete sendTweetClient;
 }
 
 
@@ -158,6 +170,9 @@ void goToLocation(const twitcher_interpreter::named_location& location)
 }
 
 void sendResponse(const std::string& message, const std::string& user_id) {
+    if(!useApi)
+        return;
+    
     twitcher_connection::handle_from_id::Request req;
     twitcher_connection::handle_from_id::Response res;
     
