@@ -32,6 +32,8 @@
 #include <twitcher_actions/GoToLocationAction.h>
 #include <twitcher_actions/SayAction.h>
 
+#include <std_srvs/Empty.h>
+
 using json = nlohmann::json;
 
 ros::ServiceClient interpreterClient;
@@ -43,7 +45,9 @@ actionlib::SimpleActionClient<twitcher_actions::SayAction>* sayClient;
 
 actionlib::SimpleActionClient<twitcher_connection::SendTweetAction>* sendTweetClient;
 
-bool useApi;
+ros::ServiceClient betweenDoorsResumeClient;
+
+bool useApi, demoMode;
 
 ros::ServiceClient handleFromIdClient;
 
@@ -62,6 +66,9 @@ int main(int argc, char* argv[])
     // Parameters to load in:
     if(!node.getParam("/twitter/useapi", useApi))
         useApi = true;
+    
+    if(!node.getParam("/twitter/demomode", demoMode))
+        demoMode = false;
     
     // Connect to interpreter
     interpreterClient = node.serviceClient<twitcher_interpreter::interpret_dialog>("twitter/interpret_message");
@@ -84,6 +91,10 @@ int main(int argc, char* argv[])
     if(useApi) {
         sendTweetClient = new actionlib::SimpleActionClient<twitcher_connection::SendTweetAction>(node, "send_tweet", true);
         sendTweetClient->waitForServer();
+    }
+    
+    if(demoMode) {
+        betweenDoorsResumeClient = node.serviceClient<std_srvs::Empty>("/between_doors_interruptible/resume");
     }
 
     goToLocationClient->waitForServer();
@@ -130,6 +141,13 @@ void actOnTweet(const twitcher_connection::Tweet::ConstPtr& tweet, const twitche
             goToLocationAndSay(res.string_args[0], res.string_args[1]);
             sendResponse("The appropriate person has been annoyed!", tweet->sender);
             break;
+    }
+    
+    // Resume between_doors_interruptible if we are in demo mode
+    if(demoMode) {
+        std_srvs::EmptyRequest req;
+        std_srvs::EmptyResponse res;
+        betweenDoorsResumeClient.call(req, res);
     }
 }
 
