@@ -16,7 +16,6 @@
  */
 
 #include <twitcher_interpreter/location.h>
-#include <twitcher_interpreter/named_location.h>
 #include <json/json.hpp>
 #include <string>
 

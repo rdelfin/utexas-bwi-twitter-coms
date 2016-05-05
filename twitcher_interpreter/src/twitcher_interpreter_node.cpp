@@ -36,7 +36,6 @@
 std::vector<Location> loc;
 std::regex goToAndSayTweetRegex, goToTweetRegex;
 
-twitcher_interpreter::named_location tempLoc;
 std::string tempString;
 
 
