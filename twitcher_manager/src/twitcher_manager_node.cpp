@@ -145,6 +145,8 @@ void actOnTweet(const twitcher_connection::Tweet::ConstPtr& tweet, const twitche
     
     // Resume between_doors_interruptible if we are in demo mode
     if(demoMode) {
+        ROS_INFO("Resuming between doors task...");
+
         std_srvs::EmptyRequest req;
         std_srvs::EmptyResponse res;
         betweenDoorsResumeClient.call(req, res);
@@ -212,6 +214,8 @@ void sendResponse(const std::string& message, const std::string& user_id) {
     twitcher_connection::SendTweetGoal goal;
     goal.message = "@" + res.handle + " " + message;
     
+    ROS_INFO_STREAM("Waiting for send result...");
     sendTweetClient->sendGoal(goal);
     sendTweetClient->waitForResult();
+    ROS_INFO_STREAM("Tweet send finished!");
 }

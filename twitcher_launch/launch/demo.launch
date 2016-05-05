@@ -10,5 +10,8 @@
     <node pkg="twitcher_interpreter" name="interpreter" type="twitcher_interpreter_node" />
     <node pkg="twitcher_actions" name="actions" type="twitcher_actions_node" />
     <node pkg="sound_play" name="twitter_soundplay" type="soundplay_node.py" />
-    <node pkg="bwi_tools" name="between_doors_interruptible" type="between_doors_interruptible" />
+    <node pkg="bwi_tasks" name="between_doors_interruptible" type="between_doors_interruptible">
+        <param value="d3_414b1" name="a" />
+        <param value="d3_414b2" name="b" />
+    </node>
 </launch>
