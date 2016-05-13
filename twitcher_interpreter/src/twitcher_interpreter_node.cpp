@@ -30,13 +30,13 @@
 
 #include <twitcher_interpreter/interpret_dialog.h>
 
-#include "twitcher_interpreter/dialog_message.h"
+//#include "twitcher_interpreter/dialog_message.h"
 #include "twitcher_interpreter/location.h"
 
 std::vector<Location> loc;
 std::regex goToAndSayTweetRegex, goToTweetRegex;
 
-twitcher_interpreter::named_location tempLoc;
+//twitcher_interpreter::named_location tempLoc;
 std::string tempString;
 
 

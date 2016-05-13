@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-#include <twitcher_interpreter/named_location.h>
+//#include <twitcher_interpreter/named_location.h>
 
 class Location
 {

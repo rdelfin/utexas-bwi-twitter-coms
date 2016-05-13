@@ -25,7 +25,7 @@
 #include <twitcher_connection/handle_from_id.h>
 #include <twitcher_connection/SendTweetAction.h>
 
-#include "twitcher_interpreter/dialog_message.h"
+//#include "twitcher_interpreter/dialog_message.h"
 #include <twitcher_interpreter/interpret_dialog.h>
 
 #include <twitcher_actions/FaceDoorAction.h>
