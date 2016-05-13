@@ -50,6 +50,8 @@ contains a template of the file needed to configure the twitter API and connect 
 Future Work
 ---
 
+* Add the option for a user to reply back (directly on the robot)
+* Add information on who sent the tweet as well as the entire text
 * Make `twitcher_connection` more robust (it currently fails if the message format is different from expected).
 * Find alternate implementations of `twitcher_interpreter` that allow for any message format, instead of being constrained to a regex.
 * Add responses to tweets (such as "I'm on my way!" or "I just got to room **LOCATION**")
